@@ -8,13 +8,13 @@ let mockCategory: CategoryScoreModel
 
 describe('Category Serializer', () => {
   beforeEach(() => {
-  mockCategory = Testing.generateTypeOrm<CategoryScoreModel>(CategoryScoreModel)
-  
-  mockCategory.id = 10
-  mockCategory.courseId = 123
-  mockCategory.userId = 50
-  mockCategory.categoryId = 1
-  mockCategory.score = 100
+    mockCategory = Testing.generateTypeOrm<CategoryScoreModel>(CategoryScoreModel)
+
+    mockCategory.id = 10
+    mockCategory.courseId = 123
+    mockCategory.userId = 50
+    mockCategory.categoryId = 1
+    mockCategory.score = 100
   })
 
   describe('Serializing category', () => {

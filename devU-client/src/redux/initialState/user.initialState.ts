@@ -8,6 +8,7 @@ const defaultState: UserState = {
   createdAt: '',
   updatedAt: '',
   preferredName: '',
+  isAdmin: false,
 }
 
 export default defaultState

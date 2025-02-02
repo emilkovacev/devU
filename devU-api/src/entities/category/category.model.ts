@@ -5,9 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  JoinColumn, ManyToOne
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm'
-import CourseModel from "../course/course.model";
+import CourseModel from '../course/course.model'
 
 @Entity('category')
 export default class CategoryModel {
@@ -15,14 +16,14 @@ export default class CategoryModel {
    * @swagger
    * tags:
    *   - name: Categories
-   *     description: 
+   *     description:
    * components:
    *  schemas:
    *    Category:
    *      type: object
    *      required: [courseId, name]
    *      properties:
-   *        courseId: 
+   *        courseId:
    *          type: integer
    *        name:
    *          type: string
@@ -30,8 +31,8 @@ export default class CategoryModel {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({name: 'course_id'})
-  @JoinColumn({name: 'course_id'})
+  @Column({ name: 'course_id' })
+  @JoinColumn({ name: 'course_id' })
   @ManyToOne(() => CourseModel)
   courseId: number
 

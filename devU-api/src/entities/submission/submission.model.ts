@@ -24,7 +24,6 @@ export default class SubmissionModel {
    *  schemas:
    *    Submission:
    *      type: object
-   *      required: [courseId, assignmentId, userId, content, type, submitterIp, submittedBy]
    *      properties:
    *        courseId:
    *          type: integer
@@ -38,6 +37,9 @@ export default class SubmissionModel {
    *          type: string
    *        submittedBy:
    *          type: integer
+   *        files:
+   *          type: string
+   *          format: binary
    */
   @PrimaryGeneratedColumn()
   id: number
@@ -78,5 +80,4 @@ export default class SubmissionModel {
   @JoinColumn({ name: 'submitted_by' })
   @ManyToOne(() => UserModel)
   submittedBy: number
-
 }

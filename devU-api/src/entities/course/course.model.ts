@@ -6,7 +6,7 @@ export default class CourseModel {
    * @swagger
    * tags:
    *   - name: Courses
-   *     description: 
+   *     description:
    * components:
    *  schemas:
    *    Course:
@@ -33,6 +33,8 @@ export default class CourseModel {
   @PrimaryGeneratedColumn()
   id: number
 
+  // TODO: Do we add OG instructor here so creator can have all permissions and also can't be removed from the course?
+
   @Column({ length: 128 })
   name: string
 
@@ -56,4 +58,11 @@ export default class CourseModel {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date
+
+  @Column({ type: 'boolean', name: 'is_public', default: false }) 
+  isPublic: boolean;
+  
+  @Column({ name: 'private_data', type: 'timestamp', default: () => 'now()' })
+  private_data?: Date;
+
 }

@@ -2,20 +2,106 @@
 
 .name {
   font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 0.4rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 30px;
+  /* Add padding to the text inside the name block */
+  background: $primary;
+  width: 100%;
+  text-align: center;
+  color: #FFF;
+  border-radius: 20px 20px 0 0;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+}
+
+.No_assignments {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-grow: 1;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 5px;
+  padding: 30px;
+  flex-wrap: wrap;
+  // color: $primary;
+  color: $text-color;
+  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+}
+
+.Buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: auto;
+  padding: 10px;
+}
+
+.gradebook_button,
+.coursepage_button {
+  border: 0;
+  color: $text-color;
+  background: none;
+  font-weight: 600;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.tag {
+  min-height: 8px;
+  background-color: $primary;
+  margin-right: 10px;
 }
 
 .subText {
   font-size: 1rem;
-  display: flex;
+  display: inline-block;
   justify-content: space-between;
-  gap: 2rem;
+  gap: 1.5rem;
   width: 100%;
+}
+
+.tag {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 700;
+}
+
+.assignment {
+  font-size: 1.125rem;
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+
+.meta {
+  display: flex;
+  text-decoration: none;
+  gap: 1rem;
+}
+
+.container {
+  text-decoration: none;
+
+  border-radius: 0.6rem;
+  margin-bottom: 1rem;
+  color: $text-color;
+
 }
 
 @media (max-width: $medium) {
   .subText {
     display: block;
+  }
+
+  .Buttons {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+    margin-top: auto;
   }
 }

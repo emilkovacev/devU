@@ -13,8 +13,45 @@
     position: relative;
   }
 
+  h1 {
+    margin: 1.75rem auto;
+    text-align: center;
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  // general button template, extends to 3 types of buttons - primary, secondary, delete
+  .btn {
+    padding: 10px 15px;
+    border-radius: 100px;
+    border: none;
+    font-weight: 700;
+  }
+
+  button.btnPrimary {
+    @extend .btn;
+    background-color: var(--primary);
+    color: #fff; // primary button always white text
+  }
+
+  button.btnSecondary {
+    @extend .btn;
+    background-color: var(--btn-secondary-background);
+    color: var(--btn-secondary-text);
+    border: 3px solid var(--btn-secondary-border);
+  }
+
+  button.btnDelete {
+    @extend .btn;
+    background-color: var(--btn-delete-background);
+    color: var(--btn-delete-text);
+    border: 3px solid var(--btn-delete-border);
+  }
+
   body {
-    font-family: 'Open Sans', 'Helvetica', 'Arial', sans-serif;
+    font-family: 'Source Sans Pro', 'Helvetica', 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     text-size-adjust: 100%;
@@ -25,57 +62,104 @@
     --background: white;
     --text-color: black;
     --text-color-secondary: #363636;
-    --focus: #38c172;
+    --focus: var(--blue);
 
-    --primary-lighter: #41a8f7;
-    --primary: #0984e3;
-    --primary-darker: #054272;
+    --primary: var(--purple);
+
     --secondary-lighter: #cfd1d1;
     --secondary: #a8abab;
     --secondary-darker: #686b6b;
 
-    --list-item-background: #f5f5f5;
+    --list-item-background: #c5c5c5;
     --list-item-background-hover: #e9e9e9;
     --list-item-subtext: #4b4b4b;
 
-    // Non theme colors
-    --grey-lightest: #dfe6e9;
-    --grey-lighter: #b2bec3;
-    --grey: #636e72;
+    --list-simple-item-background: #9f9f9f4f;
+    --list-simple-item-background-hover: #a0a0a0;
+    --list-simple-item-subtext: #4b4b4b;
 
     --blue-lighter: #74b9ff;
     --blue: #0984e3;
+    --blue-darker: #083967;
+    --btn-secondary-border: var(--primary);
+    --btn-secondary-background: #FFF;
+    --btn-secondary-text: var(--primary);
 
-    --red-lighter: #ff7675;
-    --red: #d63031;
+    --btn-delete-border: var(--red);
+    --btn-delete-background: #FFF;
+    --btn-delete-text: var(--red);
 
-    --purple-lighter: #a29bfe;
-    --purple: #6c5ce7;
+    --input-field-background: var(--grey-lightest);
+    --input-field-label: var(--grey);
 
-    --green-lighter: #55efc4;
-    --green: #00b894;
+    --table-row-even: var(--grey-lighter);
+    --table-row-odd: var(--grey-lightest);
 
-    --yellow-lighter: #ffeaa7;
-    --yellow: #fdcb6e;
+    --red-text: var(--red);
+    --yellow-text: var(--yellow-dark);
+
+    // Non theme colors - will not update with light/dark toggle
+    --grey-lightest: #e5e5e5;
+    --grey-lighter: #c5c5c5;
+    --grey: #555555;
+    --grey-darker: #444444;
+    --grey-darkest: #333333; 
+
+    --blue-lighter: #78B7FF;
+    --blue: #1F3D7A;
+
+    --red-lighter: #FFA3A3;
+    --red: #8A2626;
+
+    --purple-lighter: #7257EB;
+    --purple: #52468A;
+    --purple-darker: #2F2363;
+
+    --green-lighter: #B0EEA2;
+    --green: #306025;
+
+    --yellow-dark: #664600;
+    --yellow: #F8D487;
 
     transition: background-color 150ms linear;
   }
 
   body.dark-mode {
-    --background: #1b1f20;
-    --text-color: white;
+    --background: #1e1e1e;
+    --text-color: #FFF;
     --text-color-secondary: #9b9b9b;
+    --focus: var(--blue-lighter);
 
-    --primary-lighter: #3796bc;
-    --primary: #266781;
-    --primary-darker: #133441;
+    --primary: #7257EB;
+
     --secondary-lighter: #636666;
     --secondary: #3d3f3f;
     --secondary-darker: #1f2020;
 
-    --list-item-background: #3b3b3b;
+    --list-item-background: #333333;
     --list-item-background-hover: #303030;
     --list-item-subtext: #e0e0e0;
+
+    --list-simple-item-background: #464646;
+    --list-simple-item-background-hover: #626262;
+    --list-simple-item-subtext: #4b4b4b;
+
+    --btn-secondary-border: var(--primary);
+    --btn-secondary-background: var(--purple-darker);
+    --btn-secondary-text: #FFF;
+
+    --btn-delete-border: var(--red-lighter);
+    --btn-delete-background: var(--red);
+    --btn-delete-text: #FFF;
+
+    --input-field-background: var(--grey);
+    --input-field-label: var(--grey-lightest);
+
+    --table-row-even: var(--grey-darker);
+    --table-row-odd: var(--grey-darkest);
+
+    --red-text: var(--red-lighter);
+    --yellow-text: var(--yellow);
 
     background-color: var(--background);
     color: var(--text-color);

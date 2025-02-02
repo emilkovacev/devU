@@ -79,7 +79,9 @@ describe('Deadline Extensions', () => {
   describe('GET - /deadline-extensions/:id', () => {
     describe('200 - Ok', () => {
       beforeEach(async () => {
-        DeadlineExtensionsService.retrieve = jest.fn().mockImplementation(() => Promise.resolve(mockedDeadlineExtension))
+        DeadlineExtensionsService.retrieve = jest
+          .fn()
+          .mockImplementation(() => Promise.resolve(mockedDeadlineExtension))
         await controller.detail(req, res, next)
       })
 

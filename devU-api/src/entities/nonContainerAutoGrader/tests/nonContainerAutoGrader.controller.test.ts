@@ -46,7 +46,9 @@ describe('NonContainerAutoGraderController', () => {
   describe('GET - /nonContainerAutoGrader', () => {
     describe('200 - Ok', () => {
       beforeEach(async () => {
-        NonContainerAutoGraderService.list = jest.fn().mockImplementation(() => Promise.resolve(mockedNonContainerAutoGraders))
+        NonContainerAutoGraderService.list = jest
+          .fn()
+          .mockImplementation(() => Promise.resolve(mockedNonContainerAutoGraders))
         await controller.get(req, res, next) // what we're testing
       })
 
@@ -72,7 +74,9 @@ describe('NonContainerAutoGraderController', () => {
   describe('GET - /nonContainerAutoGrader/byAssignmentID/:assignmentId', () => {
     describe('200 - Ok', () => {
       beforeEach(async () => {
-        NonContainerAutoGraderService.listByAssignmentId = jest.fn().mockImplementation(() => Promise.resolve(mockedNonContainerAutoGraders))
+        NonContainerAutoGraderService.listByAssignmentId = jest
+          .fn()
+          .mockImplementation(() => Promise.resolve(mockedNonContainerAutoGraders))
         await controller.getByAssignmentId(req, res, next) // what we're testing
       })
 
@@ -82,21 +86,22 @@ describe('NonContainerAutoGraderController', () => {
 
     describe('404 - Not Found', () => {
       beforeEach(async () => {
-          NonContainerAutoGraderService.listByAssignmentId = jest.fn().mockImplementation(() => Promise.resolve())
-          await controller.getByAssignmentId(req, res, next)
+        NonContainerAutoGraderService.listByAssignmentId = jest.fn().mockImplementation(() => Promise.resolve())
+        await controller.getByAssignmentId(req, res, next)
       })
 
       test('Status code is 404', () => expect(res.status).toBeCalledWith(404))
       test('Returns Not found message', () => expect(res.json).toBeCalledWith(NotFound))
       test('Next is not called', () => expect(next).toHaveBeenCalledTimes(0))
-
     })
   })
 
   describe('GET - /nonContainerAutoGrader/byId/:id', () => {
     describe('200 - Ok', () => {
       beforeEach(async () => {
-        NonContainerAutoGraderService.retrieve = jest.fn().mockImplementation(() => Promise.resolve(mockedNonContainerAutoGrader))
+        NonContainerAutoGraderService.retrieve = jest
+          .fn()
+          .mockImplementation(() => Promise.resolve(mockedNonContainerAutoGrader))
         await controller.detail(req, res, next)
       })
 
@@ -133,7 +138,9 @@ describe('NonContainerAutoGraderController', () => {
   describe('POST - /nonContainerAutoGrader/', () => {
     describe('201 - Created', () => {
       beforeEach(async () => {
-        NonContainerAutoGraderService.create = jest.fn().mockImplementation(() => Promise.resolve(mockedNonContainerAutoGrader))
+        NonContainerAutoGraderService.create = jest
+          .fn()
+          .mockImplementation(() => Promise.resolve(mockedNonContainerAutoGrader))
         await controller.post(req, res, next)
       })
 

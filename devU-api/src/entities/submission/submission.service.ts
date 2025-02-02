@@ -1,24 +1,27 @@
-import { getRepository, IsNull } from 'typeorm'
+import { IsNull } from 'typeorm'
+import { dataSource } from '../../database'
 
 import SubmissionModel from '../submission/submission.model'
 import FileModel from '../../fileUpload/fileUpload.model'
 import CourseModel from '../course/course.model'
 
-import { Submission, FileUpload } from 'devu-shared-modules'
+import { FileUpload, Submission } from 'devu-shared-modules'
 import { uploadFile } from '../../fileStorage'
-import { groupBy } from '../../database'
 
-const submissionConn = () => getRepository(SubmissionModel)
-const fileConn = () => getRepository(FileModel)
+const submissionConn = () => dataSource.getRepository(SubmissionModel)
+const fileConn = () => dataSource.getRepository(FileModel)
 
 export async function create(submission: Submission, file?: Express.Multer.File | undefined) {
   if (file) {
-    const bucket: string = await getRepository(CourseModel).findOne({ id: submission.courseId }).then((course) => {
-      if (course) {
-        return (course.number + course.semester + course.id).toLowerCase()
-      }
-      return 'submission'
-    })
+    const bucket: string = await dataSource
+      .getRepository(CourseModel)
+      .findOneBy({ id: submission.courseId })
+      .then(course => {
+        if (course) {
+          return (course.number + course.semester + course.id).replace(/ /g, '-').toLowerCase()
+        }
+        return 'submission'
+      })
 
     const filename: string = file.originalname
     const Etag: string = await uploadFile(bucket, file, filename)
@@ -32,7 +35,10 @@ export async function create(submission: Submission, file?: Express.Multer.File 
       filename: filename,
     }
     const content = JSON.parse(submission.content)
-    content.filepaths.push(filename)
+    if (!content.filepaths) {
+      content.filepaths = []
+    }
+    content.filepaths.push(`${bucket}/${filename}`)
     submission.content = JSON.stringify(content)
 
     await fileConn().save(fileModel)
@@ -45,15 +51,16 @@ export async function _delete(id: number) {
 }
 
 export async function retrieve(id: number) {
-  return await submissionConn().findOne({ id, deletedAt: IsNull() })
+  return await submissionConn().findOneBy({ id, deletedAt: IsNull() })
 }
 
-
-
 export async function list(query: any, id: number) {
-  const OrderByMappings = ['id', 'createdAt', 'updatedAt', 'courseId', 'assignmentId', 'submittedBy']
 
-  return await groupBy<SubmissionModel>(submissionConn(), OrderByMappings, query, { index: 'submittedBy', value: id })
+  return await submissionConn().findBy({ ...query, submittedBy: id, deletedAt: IsNull() })
+}
+
+export async function listByAssignment(assignmentId: number, id: number) {
+  return await submissionConn().find({ where: { assignmentId, submittedBy: id, deletedAt: IsNull() } })
 }
 
 export default {
@@ -61,4 +68,5 @@ export default {
   retrieve,
   _delete,
   list,
+  listByAssignment,
 }

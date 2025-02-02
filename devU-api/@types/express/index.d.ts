@@ -6,6 +6,7 @@ declare global {
       // Auth Data
       currentUser?: AccessToken // Deserialized access token
       refreshUser?: RefreshToken // Deserialized refresh token
+      ownerId?: string // The owner of the requested resource(s)
     }
   }
 }

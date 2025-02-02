@@ -7,9 +7,7 @@ import rootReducer from './reducers/index'
 export const composeEnhancers = window && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 
 function configureStore() {
-  const store = createStore(rootReducer, initialState, composeWithDevTools())
-
-  return store
+  return createStore(rootReducer, initialState, composeWithDevTools())
 }
 
 const store = configureStore()

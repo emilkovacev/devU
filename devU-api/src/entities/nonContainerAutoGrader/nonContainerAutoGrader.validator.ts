@@ -6,12 +6,6 @@ const question = check('question').isString().trim().isLength({ max: 128 })
 const score = check('score').isNumeric()
 const isRegex = check('isRegex').isBoolean()
 
-const validator = [
-  correctString,
-  validate,
-  question,
-  score,
-  isRegex,
-]
+const validator = [correctString, validate, question, score, isRegex]
 
 export default validator

@@ -1,0 +1,91 @@
+# Builds DevU images for release
+# tagged as latest and version number
+
+name: Release
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  tag-release:
+    name: tag-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      packages: write # to be able to publish docker image packages
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+      - name: install plugins
+        run: npm install --no-save @semantic-release/git @semantic-release/changelog -D
+
+      - name: tag version number release based on commits
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+  build-docker:
+    needs:
+      - tag-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      packages: write # to be able to publish docker images
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Get version tag from git history
+        id: tagName
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+
+      # todo run tests
+      - name: Convert image name to lowercase
+        run: |
+          original_string=${{ github.repository }}
+          echo "repo_url=$(echo $original_string | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      # docker image build
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: ap latest and version image
+        run: |
+          docker build . -f api.Dockerfile \
+            -t ghcr.io/${{ env.repo_url }}-api:${{ steps.tagName.outputs.tag }} \
+            -t ghcr.io/${{ env.repo_url }}-api:latest
+          
+          docker push ghcr.io/${{ env.repo_url }}-api:${{ steps.tagName.outputs.tag }}
+          docker push ghcr.io/${{ env.repo_url }}-api:latest
+
+      - name: client latest and version image
+        run: |
+          docker build . -f client.Dockerfile \ 
+            -t ghcr.io/${{ env.repo_url }}-client:${{ steps.tagName.outputs.tag }} \
+            -t ghcr.io/${{ env.repo_url }}-client:latest
+           
+          docker push ghcr.io/${{ env.repo_url }}-client:${{ steps.tagName.outputs.tag }}
+          docker push ghcr.io/${{ env.repo_url }}-client:latest
+
+      - name: tango latest and version image
+        run: |
+          docker build ./tango -f ./tango/Dockerfile -t ghcr.io/${{ env.repo_url }}-tango:latest
+          docker push ghcr.io/${{ env.repo_url }}-tango:latest

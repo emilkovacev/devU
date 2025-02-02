@@ -17,5 +17,7 @@ export function serialize(assignment: AssignmentModel): Assignment {
     disableHandins: assignment.disableHandins,
     createdAt: assignment.createdAt.toISOString(),
     updatedAt: assignment.updatedAt.toISOString(),
+    attachmentsHashes: assignment.attachmentsHashes,
+    attachmentsFilenames: assignment.attachmentsFilenames
   }
 }

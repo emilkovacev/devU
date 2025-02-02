@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import submissionScoreService from './submissionScore.service'
 
-import SubmissionScoreService from './submissionScore.service' //why is this twice im not even gonna touch it lmao 
+import SubmissionScoreService from './submissionScore.service' //why is this twice im not even gonna touch it lmao
 
 import { GenericResponse, NotFound, Updated } from '../../utils/apiResponse.utils'
 
@@ -12,6 +12,19 @@ export async function get(req: Request, res: Response, next: NextFunction) {
     const submissionId = req.query.submission as number | undefined
 
     const submissionScores = await SubmissionScoreService.list(submissionId)
+    const response = submissionScores.map(serialize)
+
+    res.status(200).json(response)
+  } catch (err) {
+    next(err)
+  }
+}
+export async function getByUser(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = parseInt(req.params.userId)
+    const assignmentId = parseInt(req.params.assignmentId)
+
+    const submissionScores = await SubmissionScoreService.listByUser(userId, assignmentId)
     const response = submissionScores.map(serialize)
 
     res.status(200).json(response)
@@ -42,7 +55,9 @@ export async function post(req: Request, res: Response, next: NextFunction) {
 
     res.status(201).json(response)
   } catch (err) {
-    res.status(400).json(new GenericResponse(err.message))
+    if (err instanceof Error) {
+        res.status(400).json(new GenericResponse(err.message))
+    }
   }
 }
 
@@ -72,4 +87,4 @@ export async function _delete(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export default { get, detail, post, put, _delete }
+export default { get, getByUser, detail, post, put, _delete }

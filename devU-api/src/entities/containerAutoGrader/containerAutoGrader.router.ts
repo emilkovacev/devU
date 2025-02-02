@@ -1,17 +1,18 @@
-import express from 'express';
-import multer from 'multer';
+import express from 'express'
+import multer from 'multer'
 
-import validator from './containerAutoGrader.validator';
-import { asInt } from '../../middleware/validator/generic.validator';
+import validator from './containerAutoGrader.validator'
+import { asInt } from '../../middleware/validator/generic.validator'
+import { isAuthorized } from '../../authorization/authorization.middleware'
 
-import ContainerAutoGraderController from './containerAutoGrader.controller';
+import ContainerAutoGraderController from './containerAutoGrader.controller'
 
-const Router = express.Router();
-const upload = multer();
+const Router = express.Router({ mergeParams: true })
+const upload = multer()
 
 /**
  * @swagger
- * /container-auto-graders:
+ * /course/:courseId/assignment/:assignmentId/container-auto-graders:
  *   get:
  *     summary: Retrieve a list of all container auto graders
  *     tags:
@@ -20,11 +21,11 @@ const upload = multer();
  *       '200':
  *         description: OK
  */
-Router.get('/', ContainerAutoGraderController.get);
+Router.get('/', isAuthorized('assignmentViewAll'), ContainerAutoGraderController.get)
 
 /**
  * @swagger
- * /container-auto-graders/{id}:
+ * /course/:courseId/assignment/:assignmentId/container-auto-graders/{id}:
  *   get:
  *     summary: Retrieve a single container auto grader
  *     tags:
@@ -39,11 +40,31 @@ Router.get('/', ContainerAutoGraderController.get);
  *         schema:
  *           type: integer
  */
-Router.get('/:id', asInt(), ContainerAutoGraderController.detail);
+Router.get('/:id', isAuthorized('assignmentViewAll'), asInt(), ContainerAutoGraderController.detail)
+
+/**
+ * @swagger
+ * /course/:courseId/assignment/:assignmentId/container-auto-graders:
+ *   get:
+ *     summary: Retrieve an assignment's container auto grader
+ *     tags:
+ *       - ContainerAutoGraders
+ *     responses:
+ *       '200':
+ *         description: OK
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ */
+Router.get('/assignment/:id', asInt(), ContainerAutoGraderController.getObjectByAssignment)
 
 /**
  * @swagger
  * /container-auto-graders:
+ * /course/:courseId/assignment/:assignmentId/container-auto-graders:
  *   post:
  *     summary: Create a new container auto grader
  *     tags:
@@ -53,15 +74,21 @@ Router.get('/:id', asInt(), ContainerAutoGraderController.detail);
  *         description: OK
  *     requestBody:
  *       content:
- *         application/x-www-form-urlencoded:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/ContainerAutoGrader'
  */
-Router.post('/', upload.fields([{name: 'graderFile'},{name: 'makefileFile'}]), validator, ContainerAutoGraderController.post);
+Router.post(
+  '/',
+  isAuthorized('assignmentEditAll'),
+  upload.fields([{ name: 'graderFile' }, { name: 'makefileFile' }]),
+  validator,
+  ContainerAutoGraderController.post
+)
 
 /**
  * @swagger
- * /container-auto-graders/{id}:
+ * /course/:courseId/assignment/:assignmentId/container-auto-graders/{id}:
  *   put:
  *     summary: Update a container auto grader's grader file and/or makefile
  *     tags:
@@ -77,15 +104,22 @@ Router.post('/', upload.fields([{name: 'graderFile'},{name: 'makefileFile'}]), v
  *           type: integer
  *     requestBody:
  *       content:
- *         application/x-www-form-urlencoded:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/ContainerAutoGrader'
  */
-Router.put('/:id', asInt(), upload.fields([{name: 'graderFile'},{name: 'makefileFile'}]), validator, ContainerAutoGraderController.put);
+Router.put(
+  '/:id',
+  isAuthorized('assignmentEditAll'),
+  asInt(),
+  upload.fields([{ name: 'graderFile' }, { name: 'makefileFile' }]),
+  validator,
+  ContainerAutoGraderController.put
+)
 
 /**
  * @swagger
- * /container-auto-graders/{id}:
+ * /course/:courseId/assignment/:assignmentId/container-auto-graders/{id}:
  *   delete:
  *     summary: Delete a container auto grader
  *     tags:
@@ -100,6 +134,6 @@ Router.put('/:id', asInt(), upload.fields([{name: 'graderFile'},{name: 'makefile
  *         schema:
  *           type: integer
  */
-Router.delete('/:id', asInt(), ContainerAutoGraderController._delete);
+Router.delete('/:id', isAuthorized('assignmentEditAll'), asInt(), ContainerAutoGraderController._delete)
 
-export default Router;
+export default Router

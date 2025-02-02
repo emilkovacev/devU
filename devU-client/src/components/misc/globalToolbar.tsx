@@ -1,21 +1,21 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 import DarkModeToggle from 'components/utils/darkModeToggle'
 import FaIcon from 'components/shared/icons/faIcon'
 import UserOptionsDropdown from 'components/utils/userOptionsDropdown'
 
-import { useAppSelector } from 'redux/hooks'
 
 import styles from './globalToolbar.scss'
 
-const GlobalToolbar = () => {
-  const userId = useAppSelector((store) => store.user.id)
+import RoleDispatcher from '../utils/roleDispatcher'
 
+const GlobalToolbar = () => {
+ 
   return (
     <div className={styles.bar}>
       <Link to='/' className={styles.header}>
-        Auto Four
+        DevU
       </Link>
       <div className={styles.controls}>
         <div className={styles.sidebar}>
@@ -25,16 +25,19 @@ const GlobalToolbar = () => {
           </button>
           {/* Turns into a sidebar via css on mobile */}
           <div className={styles.menu}>
+            <RoleDispatcher/>
             <DarkModeToggle />
-            <Link to={`/users/${userId}/courses/`} className={styles.link}>
-              Courses
+            {
+            <Link to={`/courses`} className={styles.link} >
+              Join a Course
             </Link>
-            <Link to={`/users/${userId}/assignments/`} className={styles.link}>
-              Assignments
-            </Link>
-            <Link to={`/users/${userId}/submissions/`} className={styles.link}>
+            }     
+            {/*<Link to={`/myCourses`} className={styles.link}>*/}
+            {/*  My Courses*/}
+            {/*</Link>*/}
+            {/* <Link to={`/submissions`} className={styles.link}>
               Submissions
-            </Link>
+            </Link> */}
           </div>
         </div>
         <UserOptionsDropdown />

@@ -4,28 +4,16 @@ import express from 'express'
 // Middleware
 import validator from './nonContainerAutoGrader.validator'
 import { asInt } from '../../middleware/validator/generic.validator'
+import { isAuthorized } from '../../authorization/authorization.middleware'
 
 // Controller
 import nonContainerQuestions from './nonContainerAutoGrader.controller'
 
-const Router = express.Router()
+const Router = express.Router({ mergeParams: true })
 
 /**
  * @swagger
- * /nonContainerAutoGrader:
- *   get:
- *     summary: Retrieve a list of all nonContainerAutoGraders
- *     tags:
- *       - NonContainerAutoGraders
- *     responses:
- *       '200':
- *         description: OK
- */
-Router.get('/', nonContainerQuestions.get)
-
-/**
- * @swagger
- * /nonContainerAutoGrader/byAssignmentId/{assignmentId}:
+ * /course/:courseId/assignment/:assignmentId/non-container-auto-graders:
  *   get:
  *     summary: Retrieve a list of all nonContainerAutoGrader with the assignment ID
  *     tags:
@@ -40,13 +28,14 @@ Router.get('/', nonContainerQuestions.get)
  *         schema:
  *           type: integer
  */
-Router.get('/byAssignmentId/:assignmentId', asInt("assignmentId"), nonContainerQuestions.getByAssignmentId)
+Router.get('/', isAuthorized('enrolled'), nonContainerQuestions.getByAssignmentId)
+// TODO: Authorization set to enrolled temporarily, add proper authorization in context of retrieving questions on assignment detail page
 
 /**
  * @swagger
- * /nonContainerAutoGrader/byId/{id}:
+ * /course/:courseId/assignment/:assignmentId/non-container-auto-graders/byId/{id}:
  *   get:
- *     summary: Retrieve a single question
+ *     summary: Retrieve a single non container auto grader
  *     tags:
  *       - NonContainerAutoGraders
  *     responses:
@@ -59,11 +48,11 @@ Router.get('/byAssignmentId/:assignmentId', asInt("assignmentId"), nonContainerQ
  *         schema:
  *           type: integer
  */
-Router.get('/byId/:id', asInt(), nonContainerQuestions.detail)
+Router.get('/byId/:id', isAuthorized('assignmentViewAll'), asInt(), nonContainerQuestions.detail)
 
 /**
  * @swagger
- * /nonContainerAutoGrader:
+ * /course/:courseId/assignment/:assignmentId/non-container-auto-graders:
  *   post:
  *     summary: Create a question
  *     tags:
@@ -77,11 +66,11 @@ Router.get('/byId/:id', asInt(), nonContainerQuestions.detail)
  *           schema:
  *             $ref: '#/components/schemas/NonContainerAutoGrader'
  */
-Router.post('/', validator, nonContainerQuestions.post)
+Router.post('/', isAuthorized('assignmentEditAll'), validator, nonContainerQuestions.post)
 
 /**
  * @swagger
- * /nonContainerAutoGrader:
+ * /course/:courseId/assignment/:assignmentId/non-container-auto-graders:
  *   put:
  *     summary: Update a question
  *     tags:
@@ -101,11 +90,11 @@ Router.post('/', validator, nonContainerQuestions.post)
  *           schema:
  *             $ref: '#/components/schemas/NonContainerAutoGrader'
  */
-Router.put('/:id', asInt(), validator, nonContainerQuestions.put)
+Router.put('/:id', isAuthorized('assignmentEditAll'), asInt(), validator, nonContainerQuestions.put)
 
 /**
  * @swagger
- * /nonContainerAutoGrader/{id}:
+ * /course/:courseId/assignment/:assignmentId/non-container-auto-graders/{id}:
  *   delete:
  *     summary: Delete a question
  *     tags:
@@ -120,6 +109,6 @@ Router.put('/:id', asInt(), validator, nonContainerQuestions.put)
  *         schema:
  *           type: integer
  */
-Router.delete('/:id', asInt(), nonContainerQuestions._delete)
+Router.delete('/:id', isAuthorized('assignmentEditAll'), asInt(), nonContainerQuestions._delete)
 
 export default Router

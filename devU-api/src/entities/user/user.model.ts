@@ -6,7 +6,7 @@ export default class UserModel {
    * @swagger
    * tags:
    *   - name: Users
-   *     description: 
+   *     description:
    * components:
    *  schemas:
    *    User:
@@ -40,4 +40,7 @@ export default class UserModel {
 
   @Column({ name: 'preferred_name', length: 128, nullable: true })
   preferredName: string
+
+  @Column({ name: 'is_admin', default: false })
+  isAdmin: boolean
 }

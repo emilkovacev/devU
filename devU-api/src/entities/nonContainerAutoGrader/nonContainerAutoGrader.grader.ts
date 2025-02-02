@@ -11,15 +11,21 @@ export function checkAnswer(studentAnswer: string, nonContainerAutoGrader: NonCo
 
     const isMatch: boolean = pattern.test(studentAnswer)
     if (isMatch) {
-      return [nonContainerAutoGrader.score, `Grader #${nonContainerAutoGrader.id} graded "${nonContainerAutoGrader.question}" for ${nonContainerAutoGrader.score} points`]
+      return [
+        nonContainerAutoGrader.score,
+        `Autograder graded "${nonContainerAutoGrader.question}" for ${nonContainerAutoGrader.score} points`,
+      ]
     }
   } else {
     // if no regex is set use normal string matching
     if (studentAnswer === nonContainerAutoGrader.correctString) {
-      return [nonContainerAutoGrader.score, `Grader #${nonContainerAutoGrader.id} graded "${nonContainerAutoGrader.question}" for ${nonContainerAutoGrader.score} points`]
+      return [
+        nonContainerAutoGrader.score,
+        `Autograder graded "${nonContainerAutoGrader.question}" for ${nonContainerAutoGrader.score} points`,
+      ]
     }
   }
   // default value to return if all conditions fail to execute
   // i.e. the answer is incorrect or improperly formatted
-  return [0, `Grader #${nonContainerAutoGrader.id} graded "${nonContainerAutoGrader.question}" for 0 points`]
+  return [0, `Autograder graded "${nonContainerAutoGrader.question}" for 0 points`]
 }

@@ -4,6 +4,6 @@ export function serialize(scores: any[]): GraderInfo {
   const submissionScore = scores.pop()
   return {
     submissionScore: submissionScore as SubmissionScore,
-    submissionProblemScores: scores as SubmissionProblemScore[]
+    submissionProblemScores: scores as SubmissionProblemScore[],
   }
 }

@@ -13,25 +13,24 @@ import SubmissionScoreModel from '../entities/submissionScore/submissionScore.mo
 import UserModel from '../entities/user/user.model'
 import UserCourseModel from '../entities/userCourse/userCourse.model'
 import FileModel from '../fileUpload/fileUpload.model'
-import DeadlineExtensionsModel from "../entities/deadlineExtensions/deadlineExtensions.model";
+import DeadlineExtensionsModel from '../entities/deadlineExtensions/deadlineExtensions.model'
 
 type Models =
-    | AssignmentModel
-    | AssignmentProblemModel
-    | AssignmentScoreModel
-    | CategoryModel
-    | CategoryScoreModel
-    | ContainerAutoGraderModel
-    | CourseModel
-    | CourseScoreModel
-    | NonContainerAutoGraderModel
-    | SubmissionModel
-    | SubmissionProblemScoreModel
-    | SubmissionScoreModel
-    | UserModel
-    | UserCourseModel
-    | CategoryModel
-    | FileModel
-    | DeadlineExtensionsModel
+  | AssignmentModel
+  | AssignmentProblemModel
+  | AssignmentScoreModel
+  | CategoryScoreModel
+  | ContainerAutoGraderModel
+  | CourseModel
+  | CourseScoreModel
+  | NonContainerAutoGraderModel
+  | SubmissionModel
+  | SubmissionProblemScoreModel
+  | SubmissionScoreModel
+  | UserModel
+  | UserCourseModel
+  | CategoryModel
+  | FileModel
+  | DeadlineExtensionsModel
 
 export default Models

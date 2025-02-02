@@ -7,7 +7,7 @@ export function serialize(userCourse: UserCourseModel): UserCourse {
     id: userCourse.id,
     userId: userCourse.userId,
     courseId: userCourse.courseId,
-    level: userCourse.level,
+    role: userCourse.role,
     dropped: userCourse.dropped,
     createdAt: userCourse.createdAt.toISOString(),
     updatedAt: userCourse.updatedAt.toISOString(),

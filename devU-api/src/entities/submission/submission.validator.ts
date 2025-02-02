@@ -2,20 +2,20 @@ import { check } from 'express-validator'
 
 import validate from '../../middleware/validator/generic.validator'
 
-const userId = check('userId').isNumeric()
 const assignmentId = check('assignmentId').isNumeric()
 const courseId = check('courseId').isNumeric()
 const content = check('content').isString()
 
-const file = check('file').optional({ nullable: true }).custom ((value, { req }) => {
-  if(req.file !== null){
-    if (req.file.size == 0){
-      throw new Error('File is empty')
+const file = check('file')
+  .optional({ nullable: true })
+  .custom((value, { req }) => {
+    if (req.file !== null) {
+      if (req.file.size == 0) {
+        throw new Error('File is empty')
+      }
     }
-  }
+  })
 
-})
-
-const validator = [courseId, assignmentId, userId, content, file, validate]
+const validator = [courseId, assignmentId, content, file, validate]
 
 export default validator

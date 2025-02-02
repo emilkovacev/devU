@@ -12,5 +12,7 @@ export function serialize(course: CourseModel): Course {
     endDate: course.endDate.toISOString(),
     createdAt: course.createdAt.toISOString(),
     updatedAt: course.updatedAt.toISOString(),
+    isPublic: course.isPublic,
+    private_data: course.private_data ? course.private_data.toISOString() : undefined
   }
 }

@@ -9,7 +9,7 @@ import { serialize } from './submissionProblemScore.serializer'
 
 export async function get(req: Request, res: Response, next: NextFunction) {
   try {
-    const submissionId = parseInt(req.params.id)
+    const submissionId = parseInt(req.params.submissionId)
     const submissionProblemScores = await SubmissionProblemScoreService.list(submissionId)
     const response = submissionProblemScores.map(serialize)
 
@@ -22,7 +22,7 @@ export async function get(req: Request, res: Response, next: NextFunction) {
 export async function detail(req: Request, res: Response, next: NextFunction) {
   try {
     const id = parseInt(req.params.id)
-    const submissionProblemScore = await SubmissionProblemScoreService.retrieve(id)
+    const submissionProblemScore = await SubmissionProblemScoreService.retrieve(id, -1) // TODO: what to do about course id
 
     if (!submissionProblemScore) return res.status(404).json(NotFound)
 
@@ -44,7 +44,9 @@ export async function post(req: Request, res: Response, next: NextFunction) {
 
     res.status(201).json(response)
   } catch (err) {
-    res.status(400).json(new GenericResponse(err.message))
+    if (err instanceof Error) {
+        res.status(400).json(new GenericResponse(err.message))
+    }
   }
 }
 

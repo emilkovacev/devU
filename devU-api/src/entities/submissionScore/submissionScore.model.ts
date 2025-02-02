@@ -17,7 +17,7 @@ export default class SubmissionScoreModel {
    * @swagger
    * tags:
    *   - name: SubmissionScores
-   *     description: 
+   *     description:
    * components:
    *  schemas:
    *    SubmissionScore:

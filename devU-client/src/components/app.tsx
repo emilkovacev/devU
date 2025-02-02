@@ -7,7 +7,7 @@ import { SET_USER } from 'redux/types/user.types'
 import Alert from 'components/shared/alerts/alert'
 import AuthenticatedRouter from 'components/authenticatedRouter'
 import AuthProvider from 'components/pages/authProvider'
-import ErrorPage from 'components/pages/errorPage'
+import ErrorPage from 'components/pages/errorPage/errorPage'
 import LoadingOverlay from 'components/shared/loaders/loadingOverlay'
 
 import history from 'services/history.service'

@@ -1,70 +1,95 @@
 const API_URL = 'http://localhost:3001'
 
+let apiToken: { [key: string]: string } = {}
+let content = ''
+let file
+let makefile
 
-// fetch token with login route automatically
-async function fetchToken() {
+async function fetchToken(email: string, externalId: string) {
+  const urlencoded = new URLSearchParams()
+  urlencoded.append('email', email)
+  urlencoded.append('externalId', externalId)
+
   const options = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: '{"email":"name@buffalo.edu","externalId":"101"}',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: urlencoded,
   }
 
-  const rep = await fetch(API_URL + '/login/developer', options)
-  // get token in set-cookie header which will be in the format refreshToken='...'
-  const tmp = rep.headers.get('Set-Cookie')?.split('=')[1]
+  const res = await fetch(API_URL + '/login/developer', options)
+  const responseBody = await res.json()
+  const tmp = res.headers.get('Set-Cookie')?.split('=')[1]
 
   if (tmp === undefined) {
     throw Error('Api token not found')
   }
-  // remove ';Max-Age'
-  apiToken = tmp.split(';')[0]
+
+  apiToken[externalId] = tmp.split(';')[0]
+  return responseBody.userId
 }
 
-let apiToken = ''
+async function initAdmin() {
+  await fetchToken('admin@admin.admin', 'admin')
+}
 
 //Returns the ID of the newly created entry
-async function SendPOST(path: string, requestBody: string) {
+async function SendPOST(path: string, requestBody: string | FormData, requesterExternalId: string) {
+  console.log(path)
+  console.log(requestBody)
+  const headers = new Headers()
+  headers.append('Authorization', `Bearer ${apiToken[requesterExternalId]}`)
+  headers.append('Content-Type', 'application/json')
+  if (requestBody instanceof FormData) {
+    headers.delete('Content-Type')
+  } else if (typeof requestBody === 'object') {
+    requestBody = JSON.stringify(requestBody)
+  }
+
   let response = await fetch(API_URL + path, {
     method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + apiToken,
-      'Content-Type': 'application/json',
-    },
+    headers: headers,
     body: requestBody,
   })
-  if (response.status == 401 || response.status == 403) {
-    console.log('Status code: ' + response.status)
-    const responseBody = await response.json()
-    console.log(responseBody)
-    throw new Error('401 or 403 HTTP Response Received, make sure you set the TOKEN constant to a valid auth token')
-  } else if (response.status >= 400) {
-    console.log('Status code: ' + response.status)
-    const responseBody = await response.json()
-    console.log(responseBody)
-    throw new Error('400/500 Level HTTP Response Received: ' + response.status)
-  } else {
-    return await response.json()
-  }
+  const responseBody = await response.json()
+  console.log(responseBody)
+  return responseBody
 }
 
-
-async function CreateCourse(name:string, number:string, semester:string) {
+async function CreateCourse(
+  name: string, 
+  number: string, 
+  semester: string, 
+  isPublic: boolean 
+) {
   const courseData = {
-    name: name,
-    semester: semester,
-    number: number,
-    startDate: '2024-01-24T00:00:00-0500',
-    endDate: '2024-05-10T23:59:59-0500',
+      name: name,
+      semester: semester,
+      number: number,
+      startDate: '2024-01-24T00:00:00-0500',
+      endDate: '2024-05-10T23:59:59-0500',
+      is_public: isPublic // Include the public property
   };
-  return await SendPOST('/courses', JSON.stringify(courseData), 'admin');
+
+  console.log('Creating course: ', courseData.name);
+  return await SendPOST('/courses/instructor', JSON.stringify(courseData), 'admin');
 }
 
+async function joinCourse(courseId: number, userId: number, role: string) {
+  const userCourseData = {
+    userId: userId,
+    courseId: courseId,
+    role: role,
+    dropped: false,
+  }
+  console.log(`Joining course: ${courseId} for user: ${userId}`)
+  return await SendPOST(`/course/${courseId}/user-courses`, JSON.stringify(userCourseData), 'admin')
+}
 
-async function createAssignment(courseId:number, name:string, categoryName:string) {
-    const time = new Date().getTime();
-    const startDate = new Date(time + 60 * 1000).toISOString();
-    const dueDate = new Date(time + 7 * 24 * 60 * 60 * 1000).toISOString();
-    const endDate = new Date(time + 14 * 24 * 60 * 60 * 1000).toISOString();
+async function createAssignment(courseId: number, name: string, categoryName: string) {
+  const time = new Date().getTime()
+  const startDate = new Date(time + 60 * 1000).toISOString()
+  const dueDate = new Date(time + 7 * 24 * 60 * 60 * 1000).toISOString()
+  const endDate = new Date(time + 14 * 24 * 60 * 60 * 1000).toISOString()
 
   const assignmentData = {
     courseId: courseId,
@@ -73,351 +98,203 @@ async function createAssignment(courseId:number, name:string, categoryName:strin
     dueDate: dueDate,
     endDate: endDate,
     categoryName: categoryName,
-    description: "This is a test assignment for course Id:."+courseId,
-    maxFileSize: 1024*20,
-    disableHandins: false
-  };
-  return await SendPOST('/assignments', JSON.stringify(assignmentData), 'admin');
+    description: 'This is a test assignment for course Id:.' + courseId,
+    maxFileSize: 1024 * 20,
+    disableHandins: false,
+  }
+  console.log(`Creating assignment for Course Id: ${courseId}, Name: ${name}`)
+  return await SendPOST(`/course/${courseId}/assignments`, JSON.stringify(assignmentData), 'admin')
 }
 
-
-async function createNonContainerAutoGrader(assignmentId:number, problemName:string, Score:number, Regex:string, isRegex:boolean){
+async function createNonContainerAutoGrader(
+  courseId: number,
+  assignmentId: number,
+  problemName: string,
+  Score: number,
+  Regex: string,
+  isRegex: boolean
+) {
   const problemData = {
     assignmentId: assignmentId,
     question: problemName,
     score: Score,
     correctString: Regex,
-    isRegex: isRegex
-    };
-return await SendPOST('/nonContainerAutoGrader', JSON.stringify(problemData), 'admin');
+    isRegex: isRegex,
+  }
+  console.log('Creating NonContainerAutoGrader for Assignment Id: ', assignmentId)
+  return await SendPOST(
+    `/course/${courseId}/assignment/${assignmentId}/non-container-auto-graders`,
+    JSON.stringify(problemData),
+    'admin'
+  )
 }
 
-
-async function createSubmission(courseId:number, assignmentId:number, userId:number, externalId:string, content?:string, file?:File) {
-  const time = new Date().toISOString();
-
-  content = content || `This is a test submission for assignment Id: ${assignmentId}`;
-  const fullContent = `{"filepath":"${file ? file.name : ''}","form":${JSON.stringify(content)}}`;
-
-  const submissionData = {
-    createdAt: time,
-    updatedAt: time,
-    courseId: courseId,
-    assignmentId: assignmentId,
-    userId: userId,
-    content: fullContent
-  };
-
-  return await SendPOST('/submissions', JSON.stringify(submissionData), externalId);
+async function createContainerAutoGrader(
+  courseId: number,
+  assignmentId: number,
+  imageName: string,
+  timeout: number,
+  graderFile: File,
+  makefile?: File
+) {
+  const formData = new FormData()
+  formData.append('assignmentId', assignmentId.toString())
+  formData.append('autogradingImage', imageName)
+  formData.append('graderFile', graderFile)
+  formData.append('timeout', timeout.toString())
+  if (makefile) {
+    formData.append('makefileFile', makefile)
+  }
+  console.log('Creating ContainerAutoGrader for Assignment Id: ', assignmentId)
+  return await SendPOST(`/course/${courseId}/assignment/${assignmentId}/container-auto-graders`, formData, 'admin')
 }
 
+async function createSubmission(
+  courseId: number,
+  assignmentId: number,
+  userId: number,
+  externalId: string,
+  content?: string,
+  file?: File
+) {
+  const time = new Date().toISOString()
 
-async function createAssignmentProblem(assignmentId:number, problemName:string, maxScore:number){
+  content = content || `This is a test submission for assignment Id: ${assignmentId}`
+  const fullContent = `{"form":${JSON.stringify(content)}}`
+
+  let response
+  console.log('Creating submission for assignment Id: ', assignmentId)
+  if (file) {
+    const formData = new FormData()
+    formData.append('content', fullContent)
+    formData.append('createdAt', time)
+    formData.append('updatedAt', time)
+    formData.append('courseId', courseId.toString())
+    formData.append('assignmentId', assignmentId.toString())
+    formData.append('userId', userId.toString())
+    formData.append('files', file)
+
+    response = await SendPOST(`/course/${courseId}/assignment/${assignmentId}/submissions`, formData, externalId)
+  } else {
+    const submissionData = {
+      createdAt: time,
+      updatedAt: time,
+      courseId: courseId,
+      assignmentId: assignmentId,
+      userId: userId,
+      content: fullContent,
+    }
+    //@ts-ignore
+    response = await SendPOST(`/course/${courseId}/assignment/${assignmentId}/submissions`, submissionData, externalId)
+  }
+  return response
+}
+
+async function createAssignmentProblem(courseId: number, assignmentId: number, problemName: string, maxScore: number) {
   const problemData = {
     assignmentId: assignmentId,
     problemName: problemName,
-    maxScore: maxScore
-    };
-return await SendPOST('/assignment-problems', JSON.stringify(problemData), 'admin');
-}
-
-
-async function gradeSubmission(submissionId:number){
-  return await SendPOST(`/grade/${submissionId}`, '', 'admin')
-}
-
-async function RunRequests() {
-  try {
-    await fetchToken()
-
-    //Users
-    const userBilly = await SendPOST('/users', JSON.stringify({
-      email: 'billy@buffalo.edu', externalId: 'billy', preferredName: 'Billiam',
-    }))
-    const userBob = await SendPOST('/users', JSON.stringify({
-      email: 'bob@buffalo.edu', externalId: 'bob', preferredName: 'Bobby',
-    }))
-    const userJones = await SendPOST('/users', JSON.stringify({
-      email: 'jones@buffalo.edu', externalId: 'jones', preferredName: 'Jones',
-    }))
-
-
-    //Courses
-    const course312 = await SendPOST('/courses', JSON.stringify({
-      name: 'Web Applications',
-      semester: 's2024',
-      number: 'CSE312',
-      startDate: '2024-01-24T00:00:00-0500',
-      endDate: '2024-05-10T23:59:59-0500',
-    }))
-    const course302 = await SendPOST('/courses', JSON.stringify({
-      name: 'Intro to Experiential Learning',
-      semester: 's2024',
-      number: 'CSE302',
-      startDate: '2024-01-24T00:00:00-0500',
-      endDate: '2024-05-07T23:59:59-0500',
-    }))
-
-
-    //UserCourse
-    SendPOST('/user-courses', JSON.stringify({
-      userId: userBilly, courseId: course302, level: 'student', dropped: false,
-    }))
-    SendPOST('/user-courses', JSON.stringify({
-      userId: userBob, courseId: course312, level: 'student', dropped: false,
-    }))
-    SendPOST('/user-courses', JSON.stringify({
-      userId: userJones, courseId: course302, level: 'student', dropped: false,
-    }))
-    SendPOST('/user-courses', JSON.stringify({
-      userId: userJones, courseId: course312, level: 'student', dropped: false,
-    }))
-
-    //Categories
-    SendPOST('/categories', JSON.stringify({
-      courseId: course312, name: 'Homework'
-    }))
-    SendPOST('/categories', JSON.stringify({
-      courseId: course312, name: 'Quizzes'
-    }))
-    SendPOST('/categories', JSON.stringify({
-      courseId: course302, name: 'Sprints'
-    }))
-
-    //Assignments
-    const assign312_1 = await SendPOST('/assignments', JSON.stringify({
-      courseId: course312,
-      name: 'Homework 1',
-      startDate: '2024-02-05T00:00:00-0500',
-      dueDate: '2024-02-26T23:59:59-0500',
-      endDate: '2024-03-11T23:59:59-0500',
-      gradingType: 'code',
-      categoryName: 'Homework',
-      description: 'HTTP',
-      maxFileSize: 10000000,
-      maxSubmissions: 10,
-      disableHandins: false,
-    }))
-    const assign312_2 = await SendPOST('/assignments', JSON.stringify({
-      courseId: course312,
-      name: 'Homework 2',
-      startDate: '2024-02-19T00:00:00-0500',
-      dueDate: '2024-03-11T23:59:59-0500',
-      endDate: '2024-04-01T23:59:59-0500',
-      gradingType: 'code',
-      categoryName: 'Homework',
-      description: 'Authentication',
-      maxFileSize: 10000000,
-      maxSubmissions: 10,
-      disableHandins: false,
-    }))
-    SendPOST('/assignments', JSON.stringify({
-      courseId: course312,
-      name: 'Homework 3',
-      startDate: '2024-03-04T00:00:00-0500',
-      dueDate: '2024-04-01T23:59:59-0500',
-      endDate: '2024-04-15T23:59:59-0500',
-      gradingType: 'code',
-      categoryName: 'Homework',
-      description: 'Image Uploads',
-      maxFileSize: 10000000,
-      maxSubmissions: 10,
-      disableHandins: false,
-    }))
-    const assign312_quiz = await SendPOST('/assignments', JSON.stringify({
-      courseId: course312,
-      name: '2/19 Quiz',
-      startDate: '2024-02-09T16:00:00-0500',
-      dueDate: '2024-02-09T17:00:00-0500',
-      endDate: '2024-02-09T17:00:00-0500',
-      gradingType: 'non-code',
-      categoryName: 'Quizzes',
-      description: 'Pop quiz!',
-      maxFileSize: 10000000,
-      maxSubmissions: 1,
-      disableHandins: false,
-    }))
-    const assign302_1 = await SendPOST('/assignments', JSON.stringify({
-      courseId: course302,
-      name: 'Sprint 1',
-      startDate: '2024-01-26T00:00:00-0500',
-      dueDate: '2024-02-17T23:59:59-0500',
-      endDate: '2024-02-17T23:59:59-0500',
-      gradingType: 'manual',
-      categoryName: 'Sprints',
-      description: 'The First Sprint',
-      maxFileSize: 10000000,
-      disableHandins: false,
-    }))
-    const assign302_2 = await SendPOST('/assignments', JSON.stringify({
-      courseId: course302,
-      name: 'Sprint 2',
-      startDate: '2024-02-17T00:00:00-0500',
-      dueDate: '2024-03-09T23:59:59-0500',
-      endDate: '2024-03-09T23:59:59-0500',
-      gradingType: 'manual',
-      categoryName: 'Sprints',
-      description: 'The Second Sprint',
-      maxFileSize: 10000000,
-      disableHandins: false,
-    }))
-    SendPOST('/assignments', JSON.stringify({
-      courseId: course302,
-      name: 'Sprint 3',
-      startDate: '2024-04-06T00:00:00-0500',
-      dueDate: '2024-04-06T23:59:59-0500',
-      endDate: '2024-04-06T23:59:59-0500',
-      gradingType: 'manual',
-      categoryName: 'Sprints',
-      description: 'The Third Sprint',
-      maxFileSize: 10000000,
-      disableHandins: false,
-    }))
-
-
-    //AssignmentProblems
-
-    SendPOST("/assignment-problems", JSON.stringify({
-      assignmentId: assign312_quiz, problemName: "Of the following letters A-D, which is B?", maxScore: 5
-    }))
-    SendPOST("/assignment-problems", JSON.stringify({
-      assignmentId: assign312_quiz, problemName: "Of the following letters A-D, which is C?", maxScore: 5
-    }))
-
-
-    //Submissions
-    const submission_billy_302_1 = await SendPOST('/submissions', JSON.stringify({
-      courseId: course302,
-      assignmentId: assign302_1,
-      userId: userBilly,
-      content: 'I finished all my tasks for sprint 1!',
-      type: 'text',
-      submitterIp: '127.0.0.1',
-      submittedBy: userBilly,
-    }))
-    SendPOST('/submissions', JSON.stringify({
-      courseId: course302,
-      assignmentId: assign302_2,
-      userId: userBilly,
-      content: 'I finished all my tasks for sprint 2!',
-      type: 'text',
-      submitterIp: '127.0.0.1',
-      submittedBy: userBilly,
-    }))
-    const submission_bob_312_1 = await SendPOST('/submissions', JSON.stringify({
-      courseId: course312,
-      assignmentId: assign312_1,
-      userId: userBob,
-      content: 'jesse pleaseee can i have a good grade pleaseeee',
-      type: 'text',
-      submitterIp: '127.0.0.1',
-      submittedBy: userBob,
-    }))
-    SendPOST('/submissions', JSON.stringify({
-      courseId: course312,
-      assignmentId: assign312_2,
-      userId: userBob,
-      content: 'im begging you jesse please show mercy',
-      type: 'text',
-      submitterIp: '127.0.0.1',
-      submittedBy: userBob,
-    }))
-    const submission_bob_312_quiz1 = await SendPOST('/submissions', JSON.stringify({
-      courseId: course312,
-      assignmentId: assign312_quiz,
-      userId: userBob,
-      content: '{"form":{"Of the following letters A-D, which is B?":"B","Of the following letters A-D, which is C?":"D"},"filepaths":""}',
-      type: 'json',
-      submitterIp: '127.0.0.1',
-      submittedBy: userBob,
-    }))
-
-
-
-    //SubmissionScores
-    SendPOST('/submission-scores', JSON.stringify({
-      submissionId: submission_billy_302_1,
-      score: 90,
-      feedback: 'Good work, but please make sure you come to each team meeting fully prepared.',
-      releasedAt: '2024-02-27T07:17:27-0500',
-    }))
-    SendPOST('/submission-scores', JSON.stringify({
-      submissionId: submission_bob_312_1, score: 20, feedback: 'no', releasedAt: '2024-03-02T18:34:57-0500',
-    }))
-    SendPOST('/submission-scores', JSON.stringify({
-      submissionId: submission_bob_312_1,
-      score: 5,
-      feedback: '1/2 Questions Correct',
-      releasedAt: '2024-02-09T17:00:00-0500',
-    }))
-
-    // non container auto grader
-    SendPOST('/nonContainerAutoGrader', JSON.stringify({
-      'assignmentId': 1,
-      'question': 'What do you call fake spaghetti?',
-      'score': 1,
-      'correctString': '/^An impasta\\.$/',
-      'isRegex': true,
-    }))
-    SendPOST('/nonContainerAutoGrader', JSON.stringify({
-      assignmentId: 1,
-      question: 'why did the chicken cross the road',
-      score: 100,
-      correctString: 'because he wanted to get to the other side',
-      isRegex: false,
-    }))
-    SendPOST('/nonContainerAutoGrader', JSON.stringify({
-      assignmentId: 1,
-      question: 'Why couldn\'t the bicycle stand up by itself?',
-      score: 1,
-      correctString: '/^It was (two|2)-tired\\.$/',
-      isRegex: true,
-    }))
-    SendPOST("/nonContainerAutoGrader", JSON.stringify({
-      assignmentId: assign312_quiz, 
-      question: "Of the following letters A-D, which is B?", 
-      score: 5, 
-      correctString: "B",
-      isRegex: false
-  }))
-    SendPOST("/nonContainerAutoGrader", JSON.stringify({
-      assignmentId: assign312_quiz,
-      question: "Of the following letters A-D, which is C?",
-      score: 5,
-      correctString: "C",
-      isRegex: false,
-  }))
-
-    //Grading (creates a SubmissionScore and SubmissionProblemScores)
-    SendPOST("/grade/" + submission_bob_312_quiz1, JSON.stringify({}))
-
-    SendPOST('/deadline-extensions',JSON.stringify({
-      assignmentId:1,
-      creatorId:1,
-      deadlineDate:"2024-05-23T03:32:32.813Z",
-      userId:2
-    }))
-
-    //AssignmentScore - ROUTE NOT FUNCTIONAL
-    // SendPOST("/assignment-score", JSON.stringify({
-    //     assignmentId: assign302_1, userId: userBilly, score: 90
-    // }))
-    // SendPOST("/assignment-score", JSON.stringify({
-    //     assignmentId: assign312_1, userId: userBob, score: 20
-    // }))
-
-
-
-
-    //CategoryScores - ROUTE NOT FUNCTIONAL
-
-
-    //CourseScores - ROUTE NOT FUNCTIONAL
-
-    console.log('Script completed successfully!')
-  } catch (e) {
-    console.error(e)
+    maxScore: maxScore,
   }
+  return await SendPOST(
+    `/course/${courseId}/assignment/${assignmentId}/assignment-problems`,
+    JSON.stringify(problemData),
+    'admin'
+  )
 }
 
-RunRequests()
+async function gradeSubmission(courseId: number, submissionId: number) {
+  return await SendPOST(`/course/${courseId}/grade/${submissionId}`, '', 'admin')
+}
+
+async function runCourseAndSubmission() {
+  // try {
+  //Create users
+  const billy = await fetchToken('billy@buffalo.edu', 'billy')
+  const bob = await fetchToken('bob@buffalo.edu', 'bob')
+  const jones = await fetchToken('jones@buffalo.edu', 'jones')
+
+  //Create courses
+  const courseId1 = (await CreateCourse('Testing Course Name1', 'CSE101', 's2024',true)).id
+  const courseId2 = (await CreateCourse('Testing Course Name2', 'CSE102', 's2024',true)).id
+
+  //Enroll students
+  await joinCourse(courseId1, billy, 'student')
+  await joinCourse(courseId1, bob, 'student')
+  await joinCourse(courseId1, jones, 'instructor')
+  await joinCourse(courseId2, billy, 'student')
+  await joinCourse(courseId2, bob, 'student')
+  await joinCourse(courseId2, jones, 'instructor')
+
+  //Create assignments
+  const assignment1 = await createAssignment(courseId1, 'Course1 Assignment 1', 'Quiz')
+  const assignmentId1 = assignment1.id
+  const assignmentId2 = (await createAssignment(courseId1, 'Course1 Assignment 2', 'Homework')).id
+
+  const assignmentId3 = (await createAssignment(courseId2, 'Course2 Assignment 1', 'Quiz')).id
+  const assignmentId4 = (await createAssignment(courseId2, 'Course2 Assignment 2', 'Homework')).id
+
+  const problemName1 = (await createAssignmentProblem(courseId1, assignmentId1, 'Please answer A', 10)).problemName
+  const problemName2 = (await createAssignmentProblem(courseId1, assignmentId1, 'Please answer B', 10)).problemName
+
+  const problemName3 = (await createAssignmentProblem(courseId2, assignmentId3, 'Please NOT answer A', 10)).problemName
+  const problemName4 = (await createAssignmentProblem(courseId2, assignmentId3, 'Please NOT answer B', 10)).problemName
+
+  //NonContainerAutoGrader
+  await createNonContainerAutoGrader(courseId1, assignmentId1, problemName1, 10, 'A', false)
+  await createNonContainerAutoGrader(courseId1, assignmentId1, problemName2, 10, 'B', false)
+  await createNonContainerAutoGrader(courseId2, assignmentId3, problemName1, 10, '/^[^Aa]+$/', true)
+  await createNonContainerAutoGrader(courseId2, assignmentId3, problemName2, 10, '/^[^Bb]+$/', true)
+
+  //ContainerAutoGrader
+  makefile = new File(['This is a test makefile'], 'makefile')
+  file = new File(['This is a test grader file'], 'grader.code')
+  await createContainerAutoGrader(courseId1, assignmentId2, 'NewestImageInTheWorld', 300, file, makefile)
+
+  file = new File(['This is another test grader file'], 'grader.code')
+  await createContainerAutoGrader(courseId2, assignmentId4, 'OldestImageInTheWorld', 300, file, makefile)
+
+  //Create submissions
+  content = `{"${problemName1}": "A", "${problemName2}": "B"}`
+  const submission1 = await createSubmission(courseId1, assignmentId1, billy, 'billy', content)
+
+  content = `{"${problemName1}": "C", "${problemName2}": "D"}`
+  const submission2 = await createSubmission(courseId1, assignmentId1, bob, 'bob', content)
+
+  content = `{"${problemName3}": "A", "${problemName4}": "B"}`
+  const submission3 = await createSubmission(courseId2, assignmentId3, billy, 'billy', content)
+
+  content = `{"${problemName3}": "C", "${problemName4}": "D"}`
+  const submission4 = await createSubmission(courseId2, assignmentId3, bob, 'bob', content)
+
+  file = new File(['This is a test file1'], 'test.txt')
+  const submission5 = await createSubmission(courseId1, assignmentId2, billy, 'billy', undefined, file)
+  const submission6 = await createSubmission(courseId1, assignmentId2, bob, 'bob', undefined, file)
+
+  file = new File(['These are lines of codes'], 'code.code')
+  const submission7 = await createSubmission(courseId1, assignmentId4, billy, 'billy', undefined, file)
+  const submission8 = await createSubmission(courseId1, assignmentId4, bob, 'bob', undefined, file)
+
+  //Grade the submissions
+  for (const submission of [
+    submission1,
+    submission2,
+    submission3,
+    submission4,
+    submission5,
+    submission6,
+    submission7,
+    submission8,
+  ]) {
+    console.log('Grading submission: ', submission)
+    await gradeSubmission(submission.courseId, submission.id)
+  }
+
+  console.log('Script completed successfully!')
+  // } catch (e) {
+  //   console.error(e)
+  // }
+}
+
+initAdmin()
+runCourseAndSubmission()

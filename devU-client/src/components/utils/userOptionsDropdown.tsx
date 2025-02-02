@@ -1,9 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 import FaIcon from 'components/shared/icons/faIcon'
 
-import { useAppSelector } from 'redux/hooks'
+import {useAppSelector} from 'redux/hooks'
 
 import RequestService from 'services/request.service'
 
@@ -32,7 +32,7 @@ const UserOptionsDropdown = () => {
 
       {/* Menu open closed controlled via CSS */}
       <div className={styles.menu}>
-        <Link to={`/users/${userId}/update`} className={styles.option}>
+        <Link to={`/user/${userId}/update`} className={styles.option}>
           Account
         </Link>
         <button onClick={handleLogout} className={styles.option}>

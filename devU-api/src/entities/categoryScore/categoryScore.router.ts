@@ -4,15 +4,16 @@ import express from 'express'
 //validators
 import validator from './categoryScore.validator'
 import { asInt } from '../../middleware/validator/generic.validator'
+import { isAuthorized } from '../../authorization/authorization.middleware'
 
 //Controller
 import CategoryScoreController from './categoryScore.controller'
 
-const Router = express.Router()
+const Router = express.Router({ mergeParams: true })
 
 /**
  * @swagger
- * /category-score:
+ * /course/:courseId/category-score:
  *  get:
  *      summary: Retrieve a list of all category scores
  *      tags:
@@ -20,13 +21,12 @@ const Router = express.Router()
  *      responses:
  *        '200':
  *          description: OK
- */ 
-Router.get('/', CategoryScoreController.get)
-
+ */
+Router.get('/', isAuthorized('scoresViewAll'), CategoryScoreController.getByCourse)
 
 /**
  * @swagger
- * /category-score/{id}:
+ * /course/:courseId/category-score/{id}:
  *  get:
  *      summary: Retrieve a single category score
  *      tags:
@@ -41,11 +41,12 @@ Router.get('/', CategoryScoreController.get)
  *          schema:
  *            type: integer
  */
-Router.get('/:id', asInt(), CategoryScoreController.detail)
+Router.get('/:id', isAuthorized('scoresViewSelfReleased'), asInt(), CategoryScoreController.detail)
+// TODO: They can see everyone's scores... chance to self or all
 
 /**
  * @swagger
- * /category-score:
+ * /course/:courseId/category-score:
  *  post:
  *      summary: Create a category score
  *      tags:
@@ -59,11 +60,11 @@ Router.get('/:id', asInt(), CategoryScoreController.detail)
  *            schema:
  *              $ref: '#/components/schemas/CategoryScore'
  */
-Router.post('/', validator, CategoryScoreController.post)
+Router.post('/', isAuthorized('scoresEditAll'), validator, CategoryScoreController.post)
 
 /**
  * @swagger
- * /category-score/{id}:
+ * /course/:courseId/category-score/{id}:
  *  put:
  *      summary: Update a category score
  *      tags:
@@ -83,11 +84,11 @@ Router.post('/', validator, CategoryScoreController.post)
  *            schema:
  *              $ref: '#/components/schemas/CategoryScore'
  */
-Router.put('/:id', validator, asInt(), CategoryScoreController.put)
+Router.put('/:id', isAuthorized('scoresEditAll'), validator, asInt(), CategoryScoreController.put)
 
 /**
  * @swagger
- * /category-score/{id}:
+ * /course/:courseId/category-score/{id}:
  *  delete:
  *      summary: Delete a category score
  *      tags:
@@ -102,6 +103,6 @@ Router.put('/:id', validator, asInt(), CategoryScoreController.put)
  *          schema:
  *            type: integer
  */
-Router.delete('/:id', asInt(), CategoryScoreController._delete)
+Router.delete('/:id', isAuthorized('scoresEditAll'), asInt(), CategoryScoreController._delete)
 
 export default Router

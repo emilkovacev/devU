@@ -1,17 +1,17 @@
-import { getRepository, IsNull } from 'typeorm'
+import { IsNull } from 'typeorm'
+import { dataSource } from '../../database'
 
 import CourseModel from './course.model'
 
 import { Course } from 'devu-shared-modules'
 import { initializeMinio } from '../../fileStorage'
+import UserCourseService from '../userCourse/userCourse.service'
 
-
-
-const connect = () => getRepository(CourseModel)
+const connect = () => dataSource.getRepository(CourseModel)
 
 export async function create(course: Course) {
   const output = await connect().save(course)
-  const bucketName = (course.number + course.semester + course.id).toLowerCase()
+  const bucketName = (course.number + course.semester + course.id).replace(/ /g, '-').toLowerCase()
   await initializeMinio(bucketName)
   return output
 }
@@ -27,11 +27,50 @@ export async function _delete(id: number) {
 }
 
 export async function retrieve(id: number) {
-  return await connect().findOne({ id, deletedAt: IsNull() })
+  return await connect().findOneBy({ id, deletedAt: IsNull() })
 }
 
 export async function list() {
-  return await connect().find({ deletedAt: IsNull() })
+  return await connect().findBy({ deletedAt: IsNull() })
+}
+
+export async function listByUser(userId: number) {
+  const userCourses = await UserCourseService.listByUser(userId)
+  const date = new Date()
+  const activeCourses = []
+  const pastCourses = []
+  const instructorCourses = []
+  const upcomingCourses = []
+
+  const userCourseIds = userCourses.map(userCourse => userCourse.courseId)
+
+  const allCourses =
+    userCourseIds.length > 0
+      ? await connect()
+          .createQueryBuilder('course')
+          .where('course.id IN (:...ids)', { ids: userCourseIds })
+          .andWhere('course.deletedAt IS NULL')
+          .getMany()
+      : []
+
+  for (const course of allCourses) {
+    const userCourse = userCourses.find(userCourse => userCourse.courseId === course.id)
+    switch (true) {
+      case course.startDate > date:
+        upcomingCourses.push(course)
+        break
+      case course.endDate < date:
+        pastCourses.push(course)
+        break
+      case userCourse && userCourse.role === 'instructor':
+        instructorCourses.push(course)
+        break
+      default:
+        activeCourses.push(course)
+    }
+  }
+
+  return { activeCourses, pastCourses, instructorCourses, upcomingCourses }
 }
 
 export default {
@@ -40,4 +79,5 @@ export default {
   update,
   _delete,
   list,
+  listByUser,
 }

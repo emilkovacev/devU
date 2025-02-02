@@ -4,15 +4,16 @@ import express from 'express'
 //validators
 import validator from './courseScore.validator'
 import { asInt } from '../../middleware/validator/generic.validator'
+import { isAuthorized } from '../../authorization/authorization.middleware'
 
 //Controller
 import CourseScoreController from './courseScore.controller'
 
-const Router = express.Router()
+const Router = express.Router({ mergeParams: true })
 
 /**
  * @swagger
- * /course-score:
+ * /course/:courseId/course-score:
  *  get:
  *      summary: Retrieve a list of all course scores
  *      tags:
@@ -21,12 +22,11 @@ const Router = express.Router()
  *        '200':
  *          description: OK
  */
-Router.get('/', CourseScoreController.get)
-
+Router.get('/', isAuthorized('scoresViewAll'), CourseScoreController.get)
 
 /**
  * @swagger
- * /course-score/{id}:
+ * /course/:courseId/course-score/{id}:
  *  get:
  *      summary: Retrieve a single course score
  *      tags:
@@ -41,11 +41,12 @@ Router.get('/', CourseScoreController.get)
  *          schema:
  *            type: integer
  */
-Router.get('/:id', asInt(), CourseScoreController.detail)
+Router.get('/:id', isAuthorized('scoresViewAll'), asInt(), CourseScoreController.detail)
+// TODO: view self
 
 /**
  * @swagger
- * /course-score:
+ * /course/:courseId/course-score:
  *  post:
  *      summary: Create a course score
  *      tags:
@@ -59,11 +60,11 @@ Router.get('/:id', asInt(), CourseScoreController.detail)
  *            schema:
  *              $ref: '#/components/schemas/CourseScore'
  */
-Router.post('/', validator, CourseScoreController.post)
+Router.post('/', isAuthorized('scoresEditAll'), validator, CourseScoreController.post)
 
 /**
  * @swagger
- * /course-score/{id}:
+ * /course/:courseId/course-score/{id}:
  *  put:
  *      summary: Update a course score
  *      tags:
@@ -83,11 +84,11 @@ Router.post('/', validator, CourseScoreController.post)
  *            schema:
  *              $ref: '#/components/schemas/CourseScore'
  */
-Router.put('/:id', validator, asInt(), CourseScoreController.put)
+Router.put('/:id', isAuthorized('scoresEditAll'), validator, asInt(), CourseScoreController.put)
 
 /**
  * @swagger
- * /course-score/{id}:
+ * /course/:courseId/course-score/{id}:
  *  delete:
  *      summary: Delete a course score
  *      tags:
@@ -102,6 +103,6 @@ Router.put('/:id', validator, asInt(), CourseScoreController.put)
  *          schema:
  *            type: integer
  */
-Router.delete('/:id', asInt(), CourseScoreController._delete)
+Router.delete('/:id', isAuthorized('scoresEditAll'), asInt(), CourseScoreController._delete)
 
 export default Router

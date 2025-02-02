@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 
 import styles from './listItemWrapper.scss'
 
@@ -10,7 +10,8 @@ type Props = {
   children: React.ReactNode
   tag?: string
   className?: string
-  
+  tagStyle?: string
+  containerStyle?: string
 }
 
 
@@ -20,9 +21,9 @@ const colorHash = (input: string) => {
   return hash.hex(input)
 }
 
-const ListItemWrapper = ({ to, children, tag, className = '' }: Props) => (
-  <Link to={to} className={styles.container} >
-    {tag && <div className={styles.tag} style={{ backgroundColor: colorHash(tag) }}></div>}
+const ListItemWrapper = ({to, children, tag, className = '', tagStyle, containerStyle}: Props) => (
+    <Link to={to} className={containerStyle ? containerStyle : styles.container}>
+      {tag && <div className={tagStyle ? tagStyle : styles.tag} style={{backgroundColor: colorHash(tag)}}></div>}
     <div className={className}>{children}</div>
   </Link>
 )

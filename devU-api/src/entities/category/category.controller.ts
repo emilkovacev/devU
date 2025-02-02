@@ -45,7 +45,6 @@ export async function getByCourse(req: Request, res: Response, next: NextFunctio
   }
 }
 
-
 export async function post(req: Request, res: Response, next: NextFunction) {
   try {
     const category = await CategoryService.create(req.body)
@@ -53,7 +52,9 @@ export async function post(req: Request, res: Response, next: NextFunction) {
 
     res.status(201).json(response)
   } catch (err) {
-    res.status(400).json(new GenericResponse(err.message))
+    if (err instanceof Error) {
+        res.status(400).json(new GenericResponse(err.message))
+    }
   }
 }
 

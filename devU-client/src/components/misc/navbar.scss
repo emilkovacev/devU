@@ -1,0 +1,24 @@
+@import 'variables';
+
+.breadcrumbContainer {
+    display: flex;
+    align-items: center;
+    margin-left: $pagePadding;
+    margin-top:10px;
+    
+}
+
+.link {
+    text-decoration: none;
+    color: $text-color; /* Breadcrumb link color */
+}
+
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.separator {
+    color: #888; /* Separator color */
+    margin: 0 5px; /* Add spacing between breadcrumbs */
+}

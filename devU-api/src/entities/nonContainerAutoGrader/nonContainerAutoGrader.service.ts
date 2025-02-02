@@ -1,8 +1,9 @@
-import { getRepository, IsNull } from 'typeorm'
+import { IsNull } from 'typeorm'
+import { dataSource } from '../../database'
 import NonContainerAutoGraderModel from './nonContainerAutoGrader.model'
 import { NonContainerAutoGrader } from 'devu-shared-modules'
 
-const connect = () => getRepository(NonContainerAutoGraderModel)
+const connect = () => dataSource.getRepository(NonContainerAutoGraderModel)
 
 export async function create(nonContainerQuestion: NonContainerAutoGrader) {
   return await connect().save(nonContainerQuestion)
@@ -20,19 +21,18 @@ export async function _delete(id: number) {
 }
 
 export async function retrieve(id: number) {
-  return await connect().findOne({ id, deletedAt: IsNull() })
+  return await connect().findOneBy({ id, deletedAt: IsNull() })
 }
 
 // Retrieve all the nonContainerQuestions linked to a particular assignment by assignmentId
 export async function listByAssignmentId(assignmentId: number) {
   if (!assignmentId) throw new Error('Missing AssignmentId')
-  return await connect().find({ assignmentId: assignmentId, deletedAt: IsNull() })
+  return await connect().findBy({ assignmentId: assignmentId, deletedAt: IsNull() })
 }
 
 export async function list() {
-  return await connect().find({ deletedAt: IsNull() })
+  return await connect().findBy({ deletedAt: IsNull() })
 }
-
 
 export default {
   create,

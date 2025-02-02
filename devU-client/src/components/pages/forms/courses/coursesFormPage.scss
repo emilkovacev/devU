@@ -1,0 +1,126 @@
+@import 'variables';
+
+.courseFormWrapper {
+  display: flex;
+  margin: 16px 50px;
+  gap: 30px;
+}
+
+.form {
+  background-color: $list-item-background;
+  border-radius: 20px;
+  width: 70%;
+  padding: 30px;
+  margin: 0 auto;
+}
+
+.updateDetailsForm {
+  @extend .form;
+  max-width: 900px;
+  margin: 0;
+}
+
+.createDetailsForm {
+  @extend .form;
+  margin: auto;
+  max-width: 900px;
+}
+
+.addDropForm {
+  @extend .form;
+  width: 30%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.datepickerContainer {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px auto;
+  gap: 10px
+}
+
+.datepicker {
+  font: inherit;
+  letter-spacing: inherit;
+  box-sizing: content-box;
+  background: none;
+  height: 1.4375em;
+  -webkit-tap-highlight-color: transparent;
+  display: block;
+
+  animation-duration: 10ms;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+}
+
+input[type='date'] {
+  height: 20px;
+  background-color: $input-field-background;
+  color: $input-field-label;
+  padding: 0.625rem 1rem;
+  border: none;
+  border-radius: 100px;
+}
+
+.semesterOptions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.fieldContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+select {
+  background: $input-field-background;
+  color: $input-field-label;
+  padding: 0.625rem 1rem;
+  border: none;
+  border-radius: 100px;
+}
+
+input[type='file']::file-selector-button {
+  background-color: $primary;
+  border-radius: 100px;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+}
+
+// MEDIA QUERIES
+@media (max-width: 800px) {
+  .courseFormWrapper {
+    margin: 16px;
+    flex-direction: column;
+  }
+
+  .updateDetailsForm, .addDropForm {
+    width: auto; // take up full container
+  }
+
+  .semesterOptions {
+    flex-direction: column;
+  }
+
+  select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 575px) {
+  .datepickerContainer {
+    flex-direction: column;
+  }
+}

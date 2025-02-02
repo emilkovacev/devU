@@ -49,10 +49,10 @@ const EditUserForm = ({ user, onSubmit }: Props) => {
         id='preferredName'
         defaultValue={user.preferredName}
       />
-      <TextField type='email' label='Email' id='email' placeholder={user.email} disabled />
-      <TextField label='Person Number' id='externalId' placeholder={user.externalId} disabled />
+      <TextField type='email' label="Email" id='email' placeholder={user.email} disabled={true} />
+      <TextField label='Person Number' id='externalId' placeholder={user.externalId} disabled={true} />
       <Button onClick={handleSubmit} loading={loading}>
-        Submit
+        Update
       </Button>
     </div>
   )

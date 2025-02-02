@@ -4,15 +4,16 @@ import express from 'express'
 // Middleware
 import validator from './deadlineExtensions.validator'
 import { asInt } from '../../middleware/validator/generic.validator'
+import { isAuthorized } from '../../authorization/authorization.middleware'
 
 // Controller
 import DeadlineExtensionsController from './deadlineExtensions.controller'
 
-const Router = express.Router()
+const Router = express.Router({ mergeParams: true })
 
 /**
  * @swagger
- * /deadline-extensions:
+ * /course/:courseId/assignment/:assignmentId/deadline-extensions:
  *   get:
  *     summary: Retrieve all deadline-extensions
  *     tags:
@@ -21,11 +22,11 @@ const Router = express.Router()
  *       '200':
  *         description: OK
  */
-Router.get('/', DeadlineExtensionsController.get)
+Router.get('/', isAuthorized('assignmentViewAll'), DeadlineExtensionsController.get)
 
 /**
  * @swagger
- * /deadline-extensions/{id}:
+ * /course/:courseId/assignment/:assignmentId/deadline-extensions/{id}:
  *   get:
  *     summary: Retrieve a single Deadline-Extension
  *     tags:
@@ -40,11 +41,12 @@ Router.get('/', DeadlineExtensionsController.get)
  *         schema:
  *           type: integer
  */
-Router.get('/:id', asInt(), DeadlineExtensionsController.detail)
+Router.get('/:id', isAuthorized('assignmentViewAll'), asInt(), DeadlineExtensionsController.detail)
+// TODO: self or assignmentViewAll
 
 /**
  * @swagger
- * /deadline-extensions:
+ * /course/:courseId/assignment/:assignmentId/deadline-extensions:
  *   post:
  *     summary: Create a Deadline-Extension
  *     tags:
@@ -58,11 +60,11 @@ Router.get('/:id', asInt(), DeadlineExtensionsController.detail)
  *           schema:
  *             $ref: '#/components/schemas/DeadlineExtensionsModel'
  */
-Router.post('/', validator, DeadlineExtensionsController.post)
+Router.post('/', isAuthorized('assignmentEditAll'), validator, DeadlineExtensionsController.post)
 
 /**
  * @swagger
- * /deadline-extensions/{id}:
+ * /course/:courseId/assignment/:assignmentId/deadline-extensions/{id}:
  *   put:
  *     summary: Update a Deadline-Extensions
  *     tags:
@@ -82,11 +84,11 @@ Router.post('/', validator, DeadlineExtensionsController.post)
  *           schema:
  *             $ref: '#/components/schemas/DeadlineExtensionsModel'
  */
-Router.put('/:id', asInt(), validator, DeadlineExtensionsController.put)
+Router.put('/:id', isAuthorized('assignmentEditAll'), asInt(), validator, DeadlineExtensionsController.put)
 
 /**
  * @swagger
- * /deadline-extensions/{id}:
+ * /course/:courseId/assignment/:assignmentId/deadline-extensions/{id}:
  *   delete:
  *     summary: Delete a Deadline-Extension
  *     tags:
@@ -101,6 +103,6 @@ Router.put('/:id', asInt(), validator, DeadlineExtensionsController.put)
  *         schema:
  *           type: integer
  */
-Router.delete('/:id', asInt(), DeadlineExtensionsController._delete)
+Router.delete('/:id', isAuthorized('assignmentEditAll'), asInt(), DeadlineExtensionsController._delete)
 
 export default Router

@@ -13,7 +13,7 @@ describe('UserCourse Serializer', () => {
     mockUserCourse.id = 10
     mockUserCourse.userId = 50
     mockUserCourse.courseId = 100
-    mockUserCourse.level = 'ta'
+    mockUserCourse.role = 'ta'
     mockUserCourse.dropped = false
     mockUserCourse.createdAt = new Date()
     mockUserCourse.updatedAt = new Date()
@@ -27,7 +27,7 @@ describe('UserCourse Serializer', () => {
       expect(expectedResult.id).toEqual(mockUserCourse.id)
       expect(expectedResult.userId).toEqual(mockUserCourse.userId)
       expect(expectedResult.courseId).toEqual(mockUserCourse.courseId)
-      expect(expectedResult.level).toEqual(mockUserCourse.level)
+      expect(expectedResult.role).toEqual(mockUserCourse.role)
       expect(expectedResult.dropped).toEqual(mockUserCourse.dropped)
     })
 

@@ -4,15 +4,18 @@ import express from 'express'
 // Middleware
 import validator from '../submissionProblemScore/submissionProblemScore.validator'
 import { asInt } from '../../middleware/validator/generic.validator'
+import { isAuthorized } from '../../authorization/authorization.middleware'
 
 // Controller
 import SubmissionProblemScoreController from '../submissionProblemScore/submissionProblemScore.controller'
 
-const Router = express.Router()
+const Router = express.Router({ mergeParams: true })
+
+// TODO: get by assignment and user
 
 /**
  * @swagger
- * /submission-problem-scores/{submission-id}:
+ * /course/:courseId/assignment/:assignmentId/submission/:{submissionId}/submission-problem-scores:
  *   get:
  *    summary: Retrieve a list of submission problem scores belonging to a submission by submission id
  *    tags:
@@ -21,18 +24,24 @@ const Router = express.Router()
  *      '200':
  *        description: OK
  *    parameters:
- *      - name: submission-id
+ *      - name: submissionId
  *        description: Enter Submission Id
  *        in: path
  *        required: true
  *        schema:
  *          type: integer
  */
-Router.get('/:id', asInt(), SubmissionProblemScoreController.get)
+Router.get(
+  '/submission/:submissionId',
+  asInt('submissionId'),
+  isAuthorized('enrolled'),
+  SubmissionProblemScoreController.get
+)
+// TODO: scoresViewAll or scoresViewSelfReleased by the submission owner
 
 /**
  * @swagger
- * /submission-problem-scores/detail/{id}:
+ * /course/:courseId/assignment/:assignmentId/submission-problem-scores/detail/{id}:
  *   get:
  *     summary: Retrieve a single submission problem score
  *     tags:
@@ -48,11 +57,12 @@ Router.get('/:id', asInt(), SubmissionProblemScoreController.get)
  *         schema:
  *           type: integer
  */
-Router.get('/detail/:id', asInt(), SubmissionProblemScoreController.detail)
+Router.get('/detail/:id', isAuthorized('enrolled'), asInt(), SubmissionProblemScoreController.detail)
+// TODO: scoresViewAll or scoresViewSelfReleased by the submission problem score
 
 /**
  * @swagger
- * /submission-problem-scores:
+ * /course/:courseId/assignment/:assignmentId/submission-problem-scores:
  *   post:
  *     summary: Create a submission problem score
  *     tags:
@@ -66,11 +76,11 @@ Router.get('/detail/:id', asInt(), SubmissionProblemScoreController.detail)
  *           schema:
  *             $ref: '#/components/schemas/SubmissionProblemScore'
  */
-Router.post('/', validator, SubmissionProblemScoreController.post)
+Router.post('/', isAuthorized('scoresEditAll'), validator, SubmissionProblemScoreController.post)
 
 /**
  * @swagger
- * /submission-problem-scores:
+ * /course/:courseId/assignment/:assignmentId/submission-problem-scores:
  *   put:
  *     summary: Update a submission problem score
  *     tags:
@@ -90,11 +100,11 @@ Router.post('/', validator, SubmissionProblemScoreController.post)
  *           schema:
  *             $ref: '#/components/schemas/SubmissionProblemScore'
  */
-Router.put('/:id', asInt(), validator, SubmissionProblemScoreController.put)
+Router.put('/:id', isAuthorized('scoresEditAll'), asInt(), validator, SubmissionProblemScoreController.put)
 
 /**
  * @swagger
- * /submission-problem-scores/{id}:
+ * /course/:courseId/assignment/:assignmentId/submission-problem-scores/{id}:
  *   delete:
  *     summary: Delete a submission problem score
  *     tags:
@@ -109,6 +119,6 @@ Router.put('/:id', asInt(), validator, SubmissionProblemScoreController.put)
  *         schema:
  *           type: integer
  */
-Router.delete('/:id', asInt(), SubmissionProblemScoreController._delete)
+Router.delete('/:id', isAuthorized('scoresEditAll'), asInt(), SubmissionProblemScoreController._delete)
 
 export default Router

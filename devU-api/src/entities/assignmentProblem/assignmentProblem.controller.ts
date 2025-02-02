@@ -8,7 +8,7 @@ import { serialize } from './assignmentProblem.serializer'
 
 export async function get(req: Request, res: Response, next: NextFunction) {
   try {
-    const assignmentId = parseInt(req.params.id)
+    const assignmentId = parseInt(req.params.assignmentId)
     const assignmentProblems = await AssignmentProblemService.list(assignmentId)
     const response = assignmentProblems.map(serialize)
 
@@ -40,7 +40,9 @@ export async function post(req: Request, res: Response, next: NextFunction) {
 
     res.status(201).json(response)
   } catch (err) {
-    res.status(400).json(new GenericResponse(err.message))
+    if (err instanceof Error) {
+        res.status(400).json(new GenericResponse(err.message))
+    }
   }
 }
 

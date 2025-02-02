@@ -1,0 +1,11 @@
+node_modules/
+../devU-api/devu-shared-modules/
+package-lock.json
+# Build Files
+*.js
+*.d.ts
+*.map.*
+*js.map
+
+./types
+./utils

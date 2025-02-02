@@ -1,10 +1,11 @@
-import { getRepository, IsNull } from 'typeorm'
+import { IsNull } from 'typeorm'
+import { dataSource } from '../../database'
 
 import CourseScoreModel from './courseScore.model'
 
 import { CourseScore } from 'devu-shared-modules'
 
-const connect = () => getRepository(CourseScoreModel)
+const connect = () => dataSource.getRepository(CourseScoreModel)
 
 export async function create(courseScore: CourseScore) {
   return await connect().save(courseScore)
@@ -23,12 +24,12 @@ export async function _delete(id: number) {
 }
 
 export async function retrieve(id: number) {
-  return await connect().findOne({ id, deletedAt: IsNull() })
+  return await connect().findOneBy({ id, deletedAt: IsNull() })
 }
 
 // Retrieve all the courseScores linked to a particular course
 export async function list() {
-  return await connect().find({ deletedAt: IsNull() })
+  return await connect().findBy({ deletedAt: IsNull() })
 }
 
 export default {

@@ -1,10 +1,11 @@
-import { getRepository, IsNull } from 'typeorm'
+import { IsNull } from 'typeorm'
+import { dataSource } from '../../database'
 
 import { SubmissionProblemScore } from 'devu-shared-modules'
 
 import SubmissionProblemScoreModel from './submissionProblemScore.model'
 
-const connect = () => getRepository(SubmissionProblemScoreModel)
+const connect = () => dataSource.getRepository(SubmissionProblemScoreModel)
 
 export async function create(submissionProblemScore: SubmissionProblemScore) {
   return await connect().save(submissionProblemScore)
@@ -22,12 +23,13 @@ export async function _delete(id: number) {
   return await connect().softDelete({ id, deletedAt: IsNull() })
 }
 
-export async function retrieve(id: number) {
-  return await connect().findOne({ id, deletedAt: IsNull() })
+export async function retrieve(id: number, courseId: number) {
+  // TODO: Submission Problem Score doesn't know its courseId (neither does submission score). Best way to ensure the request is authorized based on course permissions?
+  return await connect().findOneBy({ id, deletedAt: IsNull() })
 }
 
 export async function list(submissionId: number) {
-  return await connect().find({ submissionId: submissionId, deletedAt: IsNull() })
+  return await connect().findBy({ submissionId: submissionId, deletedAt: IsNull() })
 }
 
 export default {

@@ -4,8 +4,6 @@ import UserService from './user.service'
 
 import { GenericResponse, NotFound, Updated } from '../../utils/apiResponse.utils'
 
-import { UserCourseLevel } from 'devu-shared-modules'
-
 import { serialize } from './user.serializer'
 
 export async function get(req: Request, res: Response, next: NextFunction) {
@@ -34,19 +32,64 @@ export async function detail(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+//USE THIS
 export async function getByCourse(req: Request, res: Response, next: NextFunction) {
   try {
     const courseId = parseInt(req.params.id)
-    const userLevel = req.query.level as UserCourseLevel | undefined
+    const userRole = req.query.role
 
-    const users = await UserService.listByCourse(courseId, userLevel)
-    const response = users.map(u => { if (u) return serialize(u) })
-
+    const users = await UserService.listByCourse(courseId, userRole as string)
+    const response = users.map(u => {
+      if (u) return serialize(u)
+    })
+    // TODO: This should return users, not userRoles
     res.status(200).json(response)
   } catch (err) {
     next(err)
   }
 }
+
+// create an admin, only an admin can create a new admin
+export async function createNewAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    let newAdminUserId = req.body.newAdminUserId
+    if (!newAdminUserId) {
+      return res.status(404).send('Not found')
+    }
+
+    await UserService.createAdmin(newAdminUserId!)
+    res.status(201).send('Created new admin')
+  } catch (e) {
+    next(e)
+  }
+}
+
+
+// delete an admin, only an admin can delete an admin
+export async function deleteAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    let deleteAdminUserId = req.body.newAdminUserId
+    if (!deleteAdminUserId) {
+      return res.status(404).send('Not found')
+    }
+    await UserService.softDeleteAdmin(deleteAdminUserId)
+    res.status(204)
+  } catch (e) {
+    next(e)
+  }
+}
+
+// list admins
+export async function listAdmins(req: Request, res: Response, next: NextFunction) {
+  try {
+    let users = await UserService.listAdmin()
+    const response = users.map(serialize)
+    res.status(200).json(response)
+  } catch (e) {
+    next(e)
+  }
+}
+
 
 export async function post(req: Request, res: Response, next: NextFunction) {
   try {
@@ -55,7 +98,9 @@ export async function post(req: Request, res: Response, next: NextFunction) {
 
     res.status(201).json(response)
   } catch (err) {
-    res.status(400).json(new GenericResponse(err.message))
+    if (err instanceof Error) {
+      res.status(400).json(new GenericResponse(err.message))
+    }
   }
 }
 
@@ -85,4 +130,4 @@ export async function _delete(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export default { get, detail, post, put, _delete, getByCourse }
+export default { get, detail, post, put, _delete, getByCourse, deleteAdmin, createNewAdmin, listAdmins }

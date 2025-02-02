@@ -50,12 +50,15 @@ export function getCssVariables() {
     // Theme colors
     textColor: body.getPropertyValue('--text-color'),
     background: body.getPropertyValue('--background'),
+    listItemBackground: body.getPropertyValue('--list-item-background'),
 
     primary: body.getPropertyValue('--primary'),
-    primaryDarker: body.getPropertyValue('--primary-darker'),
 
     secondary: body.getPropertyValue('--secondary'),
     secondaryDarker: body.getPropertyValue('--secondary-darker'),
+
+    inputFieldBackground: body.getPropertyValue('--input-field-background'),
+    inputFieldLabel: body.getPropertyValue('--input-field-label'),
 
     focus: body.getPropertyValue('--focus'),
 
@@ -63,6 +66,7 @@ export function getCssVariables() {
     greyLightest: body.getPropertyValue('--grey-lightest'),
     greyLighter: body.getPropertyValue('--grey-lighter'),
     grey: body.getPropertyValue('--grey'),
+    greyDark: body.getPropertyValue('--grey-dark'),
 
     blueLighter: body.getPropertyValue('--blue-lighter'),
     blue: body.getPropertyValue('--blue'),
@@ -72,11 +76,12 @@ export function getCssVariables() {
 
     purpleLighter: body.getPropertyValue('--purple-lighter'),
     purple: body.getPropertyValue('--purple'),
+    purpleDarker: body.getPropertyValue('--purple-darker'),
 
     greenLighter: body.getPropertyValue('--green-lighter'),
     green: body.getPropertyValue('--green'),
 
-    yellowLighter: body.getPropertyValue('--yellow-lighter'),
+    yellowDark: body.getPropertyValue('--yellow-dark'),
     yellow: body.getPropertyValue('--yellow'),
   }
 }

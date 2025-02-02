@@ -30,7 +30,7 @@ function stringValidator(value: any): string {
 }
 
 function numberValidator(value: any): string {
-  if (parseInt(value) === NaN) return NOT_A_NUMBER
+  if (isNaN(parseInt(value))) return NOT_A_NUMBER
   return ''
 }
 
@@ -42,7 +42,7 @@ function booleanValidator(value: any): string {
 function datetimeValidator(value: any): string {
   if (!value) return REQUIRED_ERROR
   if (typeof value === 'number') return INVALID_DATE
-  if (Date.parse(value) === NaN) return INVALID_DATE
+  if (isNaN(Date.parse(value))) return INVALID_DATE
 
   return ''
 }

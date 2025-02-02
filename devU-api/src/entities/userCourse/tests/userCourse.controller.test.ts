@@ -47,10 +47,11 @@ describe('UserCourseController', () => {
     expectedDbResult = {} as UpdateResult
   })
 
-  describe('GET - /user-course', () => {
+  describe('GET - /user-courses', () => {
     describe('200 - Ok', () => {
       beforeEach(async () => {
         UserCourseService.list = jest.fn().mockImplementation(() => Promise.resolve(mockedUserCourses))
+        req.params.id = expectedUserId
         await controller.get(req, res, next) // what we're testing
       })
 

@@ -12,12 +12,13 @@
 - [ ] [CategoryScore](#categoryscore)
 - [ ] [Category](#category)
 - [ ] [CourseScore](#coursescore)
-# Entity Details
 
+# Entity Details
 
 ### User
 
 _Student user for devu_
+
 - id: number
 - createdAt: Date
 - updatedAt: Date
@@ -25,8 +26,10 @@ _Student user for devu_
 - email: string
 - externalId: foreign_key
 - preferredName: string
-- 
+-
+
 ### Course
+
 - id: number primary_key
 - name: string
 - semester: string
@@ -40,12 +43,13 @@ _Student user for devu_
 ### UserCourse
 
 _Links a user to a course_
+
 - id: number
 - createdAt: Date
 - updatedAt: Date
 - deletedAt: ?Date
 - userId: number foreign_key ManyToOne -> User
-- courseId: number foreign_key ManyToOne -> Course 
+- courseId: number foreign_key ManyToOne -> Course
 - level: UserCourseLevel
 - dropped: boolean
 
@@ -63,7 +67,7 @@ _Links a user to a course_
 - maxFileSize: number
 - maxSubmissions: number | null
 - disableHandins: boolean
-- createdAt: Date 
+- createdAt: Date
 - updatedAt: Date
 - deletedAt: ?Date
 
@@ -93,7 +97,8 @@ _Links a user to a course_
 - deletedAt: ?Date
 
 ### SubmissionProblemScore
-- submissionProblemScoreId: number (primary_key) 
+
+- submissionProblemScoreId: number (primary_key)
 - submissionId: foreign_key ManyToOne -> submission
 - assignmentProblemId: foreign_key ManyToOne -> AssignmentProblem
 - createdAt: Date
@@ -114,7 +119,6 @@ _Links a user to a course_
 - feedback: string | null
 - releasedAt: ?Date
 
-
 ### Category
 
 - id: number primary_key
@@ -133,20 +137,21 @@ _Links a user to a course_
 - updatedAt: Date
 - DeletedAt: ?Date
 
-
 ### CategoryScore
+
 - if: number
 - createdAt: Date
 - updatedAt: Date
 - deletedAt: ?Date
-- courseId: number foreign_key ManyToOne -> Course 
+- courseId: number foreign_key ManyToOne -> Course
 - userId: number foreign_key ManyToOne -> Category
 - category: string
 - score: number
 - letterGrade: LetterGrade
 
 ### CourseScore
-- id: number 
+
+- id: number
 - courseId: number foreign_key ManyToOne -> Course
 - score: number
 - letterGrade: string

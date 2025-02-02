@@ -1,0 +1,63 @@
+@import "variables";
+
+.formFileUpload {
+  height: 16rem;
+  width: 28rem;
+  max-width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.formFileUploadWide {
+  height: 16rem;
+  width: 100%;
+  // margin-left: 10%;
+  // margin-right: 10%;
+  text-align: center;
+  // position: relative;
+}
+
+.inputFileUpload {
+  display: none;
+}
+
+.labelFileUpload {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 2px;
+  border-radius: 1rem;
+  border-style: dashed;
+  border-color: $input-field-label;
+  background-color: $input-field-background;
+
+  &.dragActive {
+    background-color: #ffffff;
+  }
+}
+
+.uploadButton {
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1rem;
+  border: none;
+  font-family: 'Oswald', sans-serif;
+  background-color: transparent;
+
+  &:hover {
+    text-decoration-line: underline;
+  }
+}
+
+.dragFileElement {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  border-radius: 1rem;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}
+

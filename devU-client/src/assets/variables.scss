@@ -9,9 +9,7 @@ $background: var(--background);
 $text-color: var(--text-color);
 $text-color-secondary: var(--text-color-secondary);
 
-$primary-lighter: var(--primary-lighter);
 $primary: var(--primary);
-$primary-darker: var(--primary-darker);
 
 $secondary-lighter: var(--secondary-lighter);
 $secondary: var(--secondary);
@@ -20,6 +18,16 @@ $secondary-darker: var(--secondary-darker);
 $list-item-background: var(--list-item-background);
 $list-item-background-hover: var(--list-item-background-hover);
 $list-item-subtext: var(--list-item-subtext);
+
+$list-simple-item-background: var(--list-simple-item-background);
+$list-simple-item-background-hover: var(--list-simple-item-background-hover);
+$list-simple-item-subtext: var(--list-item-subtext);
+
+$input-field-background: var(--input-field-background);
+$input-field-label: var(--input-field-label);
+
+$table-row-even: var(--table-row-even);
+$table-row-odd: var(--table-row-odd);
 
 $focus: var(--focus);
 
@@ -36,12 +44,16 @@ $red: var(--red);
 
 $purple-lighter: var(--purple-lighter);
 $purple: var(--purple);
+$purple-darker: var(--purple-darker);
 
 $green-lighter: var(--green-lighter);
 $green: var(--green);
 
-$yellow-lighter: var(--yellow-lighter);
+$yellow-dark: var(--yellow-dark);
 $yellow: var(--yellow);
+
+$redText: var(--red-text);
+$yellowText: var(--yellow-text);
 
 // Non color CSS variables
 $border-radius: 3px;
@@ -52,7 +64,9 @@ $font-family: 'Open Sans', 'Helvetica', 'Arial', sans-serif;
 
 $medium: 1000px;
 $small: 600px;
-$extreme: 320px;
+$extreme: 780px;
+
+$pagePadding: 50px;
 
 @mixin ellipsis {
   overflow: hidden;

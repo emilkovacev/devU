@@ -1,0 +1,52 @@
+# Builds DevU images on develop
+# tagged as develop
+
+name: Build DevU develop
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      packages: write # to be able to publish docker image packages
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      # todo run tests
+
+      # docker image build
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Convert image name to lowercase
+        run: |
+          original_string=${{ github.repository }}
+          echo "repo_url=$(echo $original_string | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: api dev image
+        run: |
+          docker build . -f api.Dockerfile -t ghcr.io/${{ env.repo_url }}-api:beta --push
+          docker push ghcr.io/${{ env.repo_url }}-api:dev
+
+      - name: client dev image
+        run: |
+          docker build . -f client.Dockerfile -t ghcr.io/${{ env.repo_url }}-client:beta
+          docker push ghcr.io/${{ env.repo_url }}-client:dev
+
+      - name: build tango image
+        run: |
+          docker build ./tango -f ./tango/Dockerfile -t ghcr.io/${{ env.repo_url }}-tango:beta
+          docker push ghcr.io/${{ env.repo_url }}-tango:dev

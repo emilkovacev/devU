@@ -1,15 +1,17 @@
 {
   "scripts": {
-    "update-shared": "npm update devu-shared-modules",
-    "local": "cross-env NODE_ENV=local webpack-dev-server -d --open --mode development",
+    "update-shared": "cd ../devU-shared && npm run build-local && cd ../devU-client && npm i",
+    "local": "cross-env NODE_ENV=local webpack-dev-server --mode development",
     "start": "cross-env NODE_ENV=development webpack-dev-server -d --open --mode development",
     "prod": "cross-env NODE_ENV=production webpack-dev-server -d --open --mode development",
     "build": "cross-env NODE_ENV=production webpack -p --mode=production",
-    "build-development": "cross-env NODE_ENV=development webpack -p --mode=production",
+    "build-development": "cross-env NODE_ENV=development webpack --mode=production",
     "build-all": "concurrently \"npm run build-development\" \"npm run build\"",
-    "build-local": "cross-env NODE_ENV=local webpack -p --mode=production",
+    "build-local": "cross-env NODE_ENV=local webpack --mode=production",
     "format": "prettier --write \"src/**/*.{ts,tsx,json,md}\"",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "dev-backend": "docker compose -f ../compose.yml --profile dev-client up -d",
+    "dev-backend-stop": "docker compose -f ../compose.yml --profile dev-client stop"
   },
   "lint-staged": {
     "./**/*.{js,ts,json,md}": [
@@ -21,14 +23,16 @@
   },
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
-    "@fontsource/roboto": "^5.0.12",
-    "@fortawesome/free-regular-svg-icons": "^5.15.3",
-    "@fortawesome/free-solid-svg-icons": "^5.15.3",
-    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@fontsource/roboto": "^5.0.14",
+    "@fortawesome/free-regular-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/material": "^5.15.15",
+    "@mui/x-date-pickers": "^7.19.0",
     "color-hash": "^2.0.1",
+    "dayjs": "^1.11.13",
     "devu-shared-modules": "./devu-shared-modules",
     "history": "^4.10.1",
     "moment": "^2.29.1",
@@ -37,7 +41,9 @@
     "react": "^17.0.2",
     "react-datepicker": "^4.1.1",
     "react-dom": "^17.0.1",
+    "react-pdf": "^9.1.1",
     "react-redux": "^7.2.4",
+    "react-router-breadcrumbs-hoc": "^4.1.0",
     "react-router-dom": "^5.2.0",
     "react-select": "^4.3.1",
     "react-toggle": "^4.1.2",
@@ -62,7 +68,7 @@
     "dotenv-webpack": "^7.0.2",
     "file-loader": "^5.1.0",
     "fs": "^0.0.1-security",
-    "html-loader": "^0.5.5",
+    "html-loader": "^5.0.0",
     "html-webpack-injector": "^1.1.4",
     "html-webpack-plugin": "^4.5.2",
     "husky": "^6.0.0",
@@ -72,9 +78,9 @@
     "sass-loader": "^10.2.0",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.0.15",
-    "webpack": "^4.42.0",
-    "webpack-bundle-analyzer": "^3.6.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack": "^5.91.0",
+    "webpack-bundle-analyzer": "^4.10.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
   }
 }

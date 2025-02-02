@@ -9,6 +9,7 @@ export function fakeRequest(overrides?: Partial<Request>): Request {
   req.body = {}
   req.headers = {}
   req.cookies = {}
+  req.query = {}
 
   //@ts-ignore - don't feel like defining every single socket property
   req.socket = {

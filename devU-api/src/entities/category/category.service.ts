@@ -1,10 +1,11 @@
-import { getRepository, IsNull } from 'typeorm'
+import { IsNull } from 'typeorm'
+import { dataSource } from '../../database'
 
 import CategoryModel from './category.model'
 
 import { Category } from 'devu-shared-modules'
 
-const connect = () => getRepository(CategoryModel)
+const connect = () => dataSource.getRepository(CategoryModel)
 
 export async function create(category: Category) {
   return await connect().save(category)
@@ -21,15 +22,16 @@ export async function _delete(id: number) {
 }
 
 export async function retrieve(id: number) {
-  return await connect().findOne({ id, deletedAt: IsNull() })
+  return await connect().findOneBy({ id, deletedAt: IsNull() })
 }
 
 export async function list() {
-  return await connect().find({ deletedAt: IsNull() })
+  return await connect().findBy({ deletedAt: IsNull() })
 }
 
 export async function listByCourse(courseId: number) {
-  return await connect().find({ courseId, deletedAt: IsNull() })
+  // TODO?
+  return await connect().findBy({ courseId, deletedAt: IsNull() })
 }
 
 export default {

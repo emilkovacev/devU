@@ -29,9 +29,10 @@
 .trigger {
   @extend .button;
 
-  color: $text-color;
-
-  height: 50px;
+  color: #D9D9D9;
+  border-radius: 20px;
+  margin:5px;
+  height: 40px;
 
   &:hover {
     opacity: 0.7;
@@ -43,7 +44,7 @@
 }
 
 .userIcon {
-  font-size: 20px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -88,7 +89,7 @@
   text-decoration: none;
 
   &:hover {
-    background: $primary-darker;
+    background: $purple-darker;
   }
 }
 

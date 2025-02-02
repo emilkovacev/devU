@@ -10,5 +10,6 @@ export function serialize(user: UserModel): User {
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
     preferredName: user.preferredName,
+    isAdmin: user.isAdmin,
   }
 }

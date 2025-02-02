@@ -85,10 +85,11 @@ module.exports = () => {
     },
     output: {
       path: path.join(__dirname, `/dist/${env}`),
-      filename: "[name]-[hash:5].js",
+      filename: "[name]-[fullhash:5].js",
       publicPath: "/",
     },
     optimization: {
+      nodeEnv: `${env}`,
       usedExports: true,
       runtimeChunk: 'single',
       splitChunks: {
@@ -103,7 +104,9 @@ module.exports = () => {
     devServer: {
       hot: true,
       port: process.env.PORT || 9000,
-      contentBase: path.join(__dirname, "dist"),
+      static: {
+        directory: path.join(__dirname, "dist"),
+      },
       historyApiFallback: true,
     },
     devtool: 'inline-source-map',

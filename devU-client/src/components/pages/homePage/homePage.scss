@@ -1,0 +1,91 @@
+@import 'variables';
+
+
+
+.courses_heading {
+    text-align: left;
+    // margin-left: 20px;
+    // font-size: 30px;
+    // font-weight: 550;
+    margin-bottom: 30px;
+}
+
+// h1 {
+//     align-items:left;
+//     margin-left 20px;
+//     font-size: 30px;
+//     font-weight: 550;
+//     margin-bottom: 30px;
+// }
+
+
+// .no_courses {
+//     margin-left: 20px;
+// }
+
+
+
+.coursesContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    // margin: 20px;
+}
+
+.courseCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 400px;
+    padding: 0;
+    background-color: $list-item-background;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+// .create_course {
+//     border: 0;
+//     color: $primary;
+//     padding: 10px 20px;
+//     border-radius: 5px;
+//     text-decoration: none;
+//     font-weight: 600;
+//     transition: background-color 0.3s ease;
+//     margin: 20px
+// }
+
+.header {
+    color: $text-color;
+    display: block;
+    align-items: center;
+}
+
+#createCourseBtn {
+    display: block;
+    margin-left: auto;
+}
+
+// .courses_heading::after {
+//     content: '';
+//     display: block;
+//     margin-top: 10px;
+//     width: 100%;
+//     height: 1px;
+//     font-weight: 600;
+//     background-color: $text-color;
+// }
+
+@media (max-width: 768px) {
+    .coursesContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .courseCard {
+        width: 100%;
+        max-width: none;
+    }
+}

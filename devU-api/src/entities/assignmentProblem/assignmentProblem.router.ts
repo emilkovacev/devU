@@ -4,15 +4,16 @@ import express from 'express'
 // Middleware
 import validator from './assignmentProblem.validator'
 import { asInt } from '../../middleware/validator/generic.validator'
+import { isAuthorized } from '../../authorization/authorization.middleware'
 
 // Controller
 import AssignmentProblemController from './assignmentProblem.controller'
 
-const Router = express.Router()
+const Router = express.Router({ mergeParams: true })
 
 /**
  * @swagger
- * /assignment-problems/{assignment-id}:
+ * /course/:courseId/assignment/:assignmentId/assignment-problems:
  *   get:
  *     summary: Retrieve a list of assignment problems belonging to an assignment by assignment id
  *     tags:
@@ -21,18 +22,20 @@ const Router = express.Router()
  *       '200':
  *         description: OK
  *     parameters:
- *       - name: assignment-id
+ *       - name: assignmentId
  *         description: Enter Assignment Id
  *         in: path
  *         required: true
  *         schema:
- *           type: integer   
+ *           type: integer
  */
-Router.get('/:id', asInt(), AssignmentProblemController.get)
+Router.get('/', isAuthorized('enrolled'), AssignmentProblemController.get)
+// Router.get('/', isAuthorizedByAssignmentStatus, asInt(), AssignmentProblemController.get)
+// TODO: assignment released status
 
 /**
  * @swagger
- * /assignment-problems/detail/{id}:
+ * /course/:courseId/assignment/:assignmentId/assignment-problems/{id}:
  *   get:
  *     summary: Retrieve a single assignment problem's details
  *     tags:
@@ -46,13 +49,15 @@ Router.get('/:id', asInt(), AssignmentProblemController.get)
  *         in: path
  *         required: true
  *         schema:
- *           type: integer 
+ *           type: integer
  */
-Router.get('/detail/:id', asInt(), AssignmentProblemController.detail)
+Router.get('/:id', isAuthorized('assignmentEditAll'), asInt(), AssignmentProblemController.detail)
+// Router.get('/:id', isAuthorizedByAssignmentStatus, asInt(), AssignmentProblemController.detail)
+// TODO: assignment released status
 
 /**
  * @swagger
- * /assignment-problems:
+ * /course/:courseId/assignment/:assignmentId/assignment-problems:
  *   post:
  *     summary: Create an assignment problem
  *     tags:
@@ -66,11 +71,11 @@ Router.get('/detail/:id', asInt(), AssignmentProblemController.detail)
  *           schema:
  *             $ref: '#/components/schemas/AssignmentProblem'
  */
-Router.post('/', validator, AssignmentProblemController.post)
+Router.post('/', isAuthorized('assignmentEditAll'), validator, AssignmentProblemController.post)
 
 /**
  * @swagger
- * /assignment-problems:
+ * /course/:courseId/assignment/:assignmentId/assignment-problems:
  *   put:
  *     summary: Update an assignment problem
  *     tags:
@@ -84,11 +89,11 @@ Router.post('/', validator, AssignmentProblemController.post)
  *           schema:
  *             $ref: '#/components/schemas/AssignmentProblem'
  */
-Router.put('/:id', asInt(), validator, AssignmentProblemController.put)
+Router.put('/:id', isAuthorized('assignmentEditAll'), asInt(), validator, AssignmentProblemController.put)
 
 /**
  * @swagger
- * /assignment-problems/{id}:
+ * /course/:courseId/assignment/:assignmentId/assignment-problems/{id}:
  *   delete:
  *     summary: Delete an assignment problem
  *     tags:
@@ -102,6 +107,6 @@ Router.put('/:id', asInt(), validator, AssignmentProblemController.put)
  *           schema:
  *             $ref: '#/components/schemas/AssignmentProblem'
  */
-Router.delete('/:id', asInt(), AssignmentProblemController._delete)
+Router.delete('/:id', isAuthorized('assignmentEditAll'), asInt(), AssignmentProblemController._delete)
 
 export default Router

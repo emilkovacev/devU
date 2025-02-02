@@ -1,0 +1,157 @@
+@import 'variables';
+
+.courseFormWrapper {
+    display: flex;
+    margin: 16px 50px;
+    gap: 30px;
+}
+
+.categoriesContainer {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 200px; /* adjust this value to set the space between the cards */
+    margin-bottom: 20px;
+    min-height: 200px;
+    max-height: 500px;
+}
+
+
+.color{
+    background-color: $primary;
+    color: #FFF; // always white against purple bg
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.2em;
+
+}
+.coursesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    //flex-direction: row;
+    gap: 20px;
+    margin-top:20px;
+    justify-content: flex-start;
+}
+.courseCard {
+    display: flex;
+    flex: 1 0 250px;
+    max-width: 350px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    height: 100%;
+    padding: 0;
+    background-color: rebeccapurple;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 20px;
+
+    .MuiList-root {
+        padding: 20px;
+
+        .MuiListItemButton-root {
+
+            display: flex;
+            padding-top: 0;
+            padding-left: 0;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center;
+        }
+            .MuiListItemText-primary {
+                text-align: center;
+            }
+
+            .MuiListItemText-secondary {
+                text-align: center; // Center the dates
+            }
+        }
+    }
+
+
+
+.courseDetailPage {
+
+    padding: 40px;
+
+
+    .header {
+        display: flex;
+        flex-direction: column;
+
+        justify-content: space-between;
+        align-items: flex-start;
+        background-color: $secondary;
+        // padding: 30px 60px;
+        padding: 20px;
+        //border-radius: 10px;
+        color: $text-color;
+        width: 70%
+    }
+
+    h1 {
+        margin: 0 0 10px 0;
+        font-size: 1.5rem;
+        text-align: left;
+        font-weight: bold;
+
+    }
+
+    .h2 {
+        padding-top: 20px;
+        margin: 0 0 20px 0;
+        font-size: 1.0rem;
+        padding-bottom: 10px;
+    }
+
+    h3{
+        font-size: 1.5rem;
+        border-bottom: 1px solid;
+        color: $text-color;
+    }
+}
+
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+
+            justify-content: space-around;
+            width:100%;
+        }
+
+            .actual_button {
+                display: flex;
+                flex-direction: row;
+                border: 0; /* Primary button color */
+                /* Button text color */
+                padding: 10px 20px; /* Padding for button */
+                border-radius: 5px;
+                font-weight: 600;
+                transition: background-color 0.3s ease;
+                margin : 0 10px;
+                background-color: $purple !important;
+                color: white !important;
+            }
+
+.assignmentName {
+    &::after {
+        content: '';
+        display: block;
+        width: 100%;
+        margin: 5px auto;
+        border-bottom: 1px solid #ccc;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

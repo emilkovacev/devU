@@ -3,6 +3,7 @@ build/
 env/
 .idea/
 /devu-shared-modules
+package-lock.json
 
 config/*.yml
 !config/test.yml

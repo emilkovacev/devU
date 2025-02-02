@@ -95,6 +95,24 @@ async function post<T = any>(
   return _fetchWrapper(proxy, request)
 }
 
+async function postMultipart<T = any>(
+  url: string,
+  body: FormData,
+  options: RequestInit = {},
+): Promise<T> {
+  const proxy = _replaceUrl(url)
+  const authToken = await getToken()
+
+  const request: any = {
+    method: 'POST',
+    headers: { authorization: `Bearer ${authToken}` },
+    body: body,
+    ...options,
+  }
+
+  return _fetchWrapper(proxy, request)
+}
+
 async function put<T = any>(url: string, body: Record<string, any>, options: RequestInit = {}): Promise<T> {
   const token = await getToken()
   const proxy = _replaceUrl(url)
@@ -105,6 +123,20 @@ async function put<T = any>(url: string, body: Record<string, any>, options: Req
     body: JSON.stringify(body),
     ...options,
   })
+}
+
+async function putMultipart<T = any>(url: string, body: FormData, options: RequestInit = {}): Promise<T> {
+  const proxy = _replaceUrl(url)
+  const authToken = await getToken()
+
+  const request: any = {
+    method: 'PUT',
+    headers: { authorization: `Bearer ${authToken}` },
+    body: body,
+    ...options,
+  }
+
+  return _fetchWrapper(proxy, request)
 }
 
 async function deleteRequest<T = any>(url: string, options: RequestInit = {}): Promise<T> {
@@ -135,6 +167,9 @@ export default {
   post,
   put,
   delete: deleteRequest,
+
+  postMultipart,
+  putMultipart,
 
   upload,
 }

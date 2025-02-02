@@ -2,7 +2,6 @@ import { NonContainerAutoGrader } from 'devu-shared-modules'
 
 import { checkAnswer } from '../nonContainerAutoGrader.grader'
 
-
 describe('NonContainerAutoGrader grader', () => {
   let mockQuestionWithoutRegex: NonContainerAutoGrader
 
@@ -22,14 +21,14 @@ describe('NonContainerAutoGrader grader', () => {
       const studentAnswer = '42'
       const expectedResult = checkAnswer(studentAnswer, mockQuestionWithoutRegex)
 
-      expect(expectedResult).toEqual(mockQuestionWithoutRegex.score)
+      expect(expectedResult[0]).toEqual(mockQuestionWithoutRegex.score)
     })
 
     test('Student messed up', () => {
       const studentAnswer = '69'
       const expectedResult = checkAnswer(studentAnswer, mockQuestionWithoutRegex)
 
-      expect(expectedResult).toEqual(0)
+      expect(expectedResult[0]).toEqual(0)
     })
   })
 
@@ -41,7 +40,7 @@ describe('NonContainerAutoGrader grader', () => {
         id: 23,
         question: 'What was the last ever Dolphin message',
         // regex to match this exact sentence and is case-sensitive
-        correctString: '/So long, and thanks for all the fish\./gm',
+        correctString: '/So long, and thanks for all the fish./gm',
         score: 1,
         assignmentId: 8,
         isRegex: true,
@@ -52,21 +51,21 @@ describe('NonContainerAutoGrader grader', () => {
       const studentAnswer = 'So long, and thanks for all the fish.'
       const expectedResult = checkAnswer(studentAnswer, mockQuestionWithRegex)
 
-      expect(expectedResult).toEqual(mockQuestionWithRegex.score)
+      expect(expectedResult[0]).toEqual(mockQuestionWithRegex.score)
     })
 
     test('Incorrect answer', () => {
       const studentAnswer = '~~dolphin noises~~'
       const expectedResult = checkAnswer(studentAnswer, mockQuestionWithRegex)
 
-      expect(expectedResult).toEqual(0)
+      expect(expectedResult[0]).toEqual(0)
     })
 
     test('correct answer but incorrect formatting', () => {
       const studentAnswer = 'So long, and thanks for all the fish.'.toUpperCase()
       const expectedResult = checkAnswer(studentAnswer, mockQuestionWithRegex)
 
-      expect(expectedResult).toEqual(0)
+      expect(expectedResult[0]).toEqual(0)
     })
   })
 })

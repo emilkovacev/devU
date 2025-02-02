@@ -16,7 +16,7 @@ export default class NonContainerAutoGraderModel {
    * @swagger
    * tags:
    *   - name: NonContainerAutoGraders
-   *     description: 
+   *     description:
    * components:
    *  schemas:
    *    NonContainerAutoGrader:

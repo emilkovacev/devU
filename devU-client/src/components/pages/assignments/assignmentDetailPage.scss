@@ -1,0 +1,234 @@
+@import 'variables';
+
+.wrap {
+	display:flex;
+	align-items: baseline;
+	gap:20px;
+	padding:20px;
+	justify-content:center;
+}
+
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+	color: $text-color;
+}
+
+
+.line {
+    border: none;
+    height: 2px;
+    background-color: $list-item-background;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.card {
+    background-color: $list-item-background;
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin: 20px;
+}
+
+
+.card_heading {
+    font-size: 20px;
+    font-weight: 550;
+    margin-bottom: 15px;
+    color: $text-color;
+	text-align: center;
+}
+
+
+.options_buttons {
+    display: flex;
+    flex-direction: column; 
+	align-items: center;
+	justify-content: center;
+    gap: 10px; 
+    
+}
+
+.submit_container{
+	display: flex;
+    justify-content: flex-end;
+    align-items: flex-end; 
+    width: 100%; 
+    margin-top: auto; 
+ 
+}
+
+
+.buttons {
+    color: $primary;
+    background-color: $list-item-background;
+    padding: 10px 20px;
+	border-radius:15px;
+    cursor: pointer;
+    font-size: 15px;
+    border: none;
+    width: fit-content;
+	text-align: center;
+	margin-left: 20px;
+}
+
+
+.buttons:hover {
+    background-color: $list-item-background-hover;
+
+}
+
+.assignment_card {
+	background-color: $list-item-background;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	width:800px;
+}
+
+.accordion {
+    background-color: $list-item-background;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    margin-bottom: 10px; 
+}
+
+.accordionDetails {
+    background-color:$list-item-background; 
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+.typography {
+    font-size: 16px;
+    color: #333;
+}
+.gridContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; 
+    background-color: $list-item-background;
+}
+
+.textField {
+	margin-top: 10px;
+    margin-bottom: 20px; 
+}
+
+.submissionCard {
+	margin-bottom : 15px;
+    background-color: $list-item-background;
+}
+
+.fileInput {
+	margin-top: 20px;
+}
+
+.due_date {
+    font-size: 14px;
+    color: $text-color; 
+    margin-top: 5px; 
+    margin-bottom: 15px; 
+}
+
+
+.submissionsContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    width: 100%; 
+    margin-top: 20px;
+}
+
+
+.submissionCard {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+    background-color: $list-item-background;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease; 
+    padding: 10px;
+}
+
+.submissionCard:hover {
+    transform: scale(1.02); 
+}
+
+.submissionHeading {
+    color: $primary;
+    padding: 10px;
+}
+
+
+.submissionTime {
+    font-size: 14px;
+    color: $text-color; 
+    margin-top: 5px;
+    padding: 10px;
+}
+
+@media (max-width: 768px) {
+    .wrap {
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .assignment_card {
+        width: 90%;
+        max-width: 500px;
+        margin: 0 auto; 
+        padding: 20px;
+    }
+
+    .options_buttons {
+        flex-direction: column;
+        justify-content: center; 
+        width: 100%;
+        gap: 10px;
+    }
+
+    .buttons {
+        width: auto; 
+        padding: 10px 20px;
+        font-size: 15px;
+        margin: 0;
+    }
+    .card {
+        background-color: $list-item-background;
+        border-radius: 8px;
+        padding: 20px;
+        width: 200px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	    margin: 20px;
+    }
+}
+
+@media (max-width: 370px) {
+    .header {
+        align-items: center;
+        padding: 10px;
+    }
+
+    .card, .assignment_card {
+        width: 100%;
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .buttons {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .submissionsContainer {
+        padding: 10px;
+    }
+}

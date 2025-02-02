@@ -1,10 +1,11 @@
-import { getRepository, IsNull } from 'typeorm'
+import { IsNull } from 'typeorm'
+import { dataSource } from '../../database'
 
 import AssignmentProblemModel from './assignmentProblem.model'
 
 import { AssignmentProblem } from 'devu-shared-modules'
 
-const connect = () => getRepository(AssignmentProblemModel)
+const connect = () => dataSource.getRepository(AssignmentProblemModel)
 
 export async function create(assignmentProblem: AssignmentProblem) {
   return await connect().save(assignmentProblem)
@@ -21,12 +22,12 @@ export async function _delete(id: number) {
 }
 
 export async function retrieve(id: number) {
-  return await connect().findOne({ id, deletedAt: IsNull() })
+  return await connect().findOneBy({ id, deletedAt: IsNull() })
 }
 
 // Retrieve all the assignmentProblems linked to a particular assignment by assignmentId
 export async function list(assignmentId: number) {
-  return await connect().find({ assignmentId: assignmentId, deletedAt: IsNull() })
+  return await connect().findBy({ assignmentId: assignmentId, deletedAt: IsNull() })
 }
 
 export default {

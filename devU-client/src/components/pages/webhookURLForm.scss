@@ -1,0 +1,41 @@
+@import 'variables';
+
+.textField {
+    align-items: center;
+}
+
+.formBackground {
+    background-color: $list-item-background;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+.webhookURLContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    // width: 100%; 
+    margin-top: 20px;
+}
+
+.webhookURLCard {
+    display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+    background-color: $list-item-background;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease; 
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.webhookURLCard:hover {
+    transform: scale(1.02); 
+}
+
+.webhookURLHeading {
+    color: $text-color;
+    padding: 10px;
+}

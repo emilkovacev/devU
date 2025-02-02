@@ -1,0 +1,114 @@
+@import 'variables';
+
+.categoryName {
+  color: $text-color;
+  font-size: 1.25rem;
+}
+
+.tableWrapper {
+  padding: 0 100px;
+}
+
+.tableContainer {
+  overflow-x: scroll;
+  scrollbar-color: $primary;
+}
+
+table {
+  border-radius: 20px;
+  // margin: 15px auto;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+tr.evenRow {
+  background-color: $table-row-even;
+}
+
+tr.oddRow {
+  background-color: $table-row-odd;
+}
+
+th {
+  background-color: $primary;
+  color: #FFF;
+  font-weight: 600;
+}
+
+td,
+th {
+  padding: 10px;
+  text-align: center;
+}
+
+th:first-of-type {
+  border-top-left-radius: 10px;
+}
+
+th:last-of-type {
+  border-top-right-radius: 10px;
+}
+
+tr:last-of-type td:first-of-type {
+  border-bottom-left-radius: 10px;
+}
+
+tr:last-of-type td:last-of-type {
+  border-bottom-right-radius: 10px;
+}
+
+.tableOptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tableOptions span:first-child,
+span.yellow {
+  color: $yellowText;
+}
+
+.tableOptions span:last-child,
+span.red {
+  color: $redText;
+}
+
+// STUDENT GRADEBOOK STYLING
+
+// .header {
+//   color: $text-color;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   // margin-bottom: 20px;
+// }
+
+.assignmentName {
+  text-align: left;
+}
+
+.gradebook-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.category {
+  width: calc(100%/3 - 14px);
+}
+
+@media (max-width: 650px) {
+  .pageWrapper {
+    padding: 0 20px;
+  }
+
+  .category {
+    width: calc(100%/2 - 14px);
+  }
+}
+
+@media (max-width: 450px) {
+  .category {
+    width: 100%;
+  }
+}

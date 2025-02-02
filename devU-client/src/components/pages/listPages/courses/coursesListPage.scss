@@ -1,0 +1,63 @@
+@import 'variables';
+
+
+.addCourseBtn {
+
+  background-color: $primary;
+  color: $text-color;
+  border: 0px;
+  padding: 10px 40px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.courseName {
+  color: $text-color;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.filters {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-bottom: 1rem;
+}
+
+.dropdown {
+  width: 300px;
+}
+
+.header {
+  color: $text-color;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: default;
+}
+
+@media (max-width: 700px) {
+  .dropdown {
+    width: 100%;
+  }
+
+  .header {
+    display: block;
+  }
+}
+
+.smallLine {
+  width: 50px; /* adjust this value to set the length of the small line */
+  border-top: 3px solid $text-color; /* adjust this value to set the color and thickness of the line */
+  margin-right: 10px; /* adjust this value to set the space between the line and the text */
+}
+
+.largeLine {
+  flex-grow: 1;
+  border-top: 3px solid $text-color; /* adjust this value to set the color and thickness of the line */
+  margin-left: 10px; /* adjust this value to set the space between the line and the text */
+  margin-right: 10px; /* add this line to create some space between the line and the button */
+}

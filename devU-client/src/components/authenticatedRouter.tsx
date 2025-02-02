@@ -1,54 +1,65 @@
 import React from 'react'
-import { Switch, Route } from 'react-router-dom'
+import {Route, Switch} from 'react-router-dom'
 
-import AssignmentDetailPage from 'components/pages/assignmentDetailPage'
-
-import AssignmentCreatePage from 'components/pages/assignmentFormPage'
-import AssignmentUpdatePage from 'components/pages/assignmentUpdatePage'
-
-import CourseAssignmentsListPage from 'components/pages/courseAssignmentsListPage'
-import CourseDetailPage from 'components/pages/courseDetailPage'
-
-import EditCourseFormPage from 'components/pages/coursesFormPage'
-
-import CoursesListPage from 'components/pages/coursesListPage'
-import CourseUpdatePage from 'components/pages/courseUpdatePage'
-import CourseUsersListPage from 'components/pages/courseUsersListPage'
-import HomePage from 'components/pages/homePage'
+import AssignmentDetailPage from 'components/pages/assignments/assignmentDetailPage'
+import AssignmentCreatePage from 'components/pages/forms/assignments/assignmentFormPage'
+import AssignmentUpdatePage from 'components/pages/forms/assignments/assignmentUpdatePage'
+import CourseDetailPage from 'components/pages/courses/courseDetailPage'
+import EditCourseFormPage from 'components/pages/forms/courses/coursesFormPage'
+import CourseUpdatePage from 'components/pages/forms/courses/courseUpdatePage'
+import HomePage from 'components/pages/homePage/homePage'
 import NotFoundPage from 'components/pages/notFoundPage'
-import SubmissionDetailPage from 'components/pages/submissionDetailPage'
-import UserDetailPage from 'components/pages/userDetailPage'
-import UserCoursesListPage from 'components/pages/userCoursesListPage'
-import UserSubmissionsListPage from 'components/pages/userSubmissionsListPage'
-import NonContainerAutoGraderForm from './pages/nonContainerAutoGraderForm'
-import GradebookStudentPage from './pages/gradebookStudentPage'
-import GradebookInstructorPage from './pages/gradebookInstructorPage'
-import SubmissionFeedbackPage from './pages/submissionFeedbackPage'
+import SubmissionDetailPage from 'components/pages/submissions/submissionDetailPage'
+import UserDetailPage from 'components/pages/users/userDetailPage'
+import NonContainerAutoGraderForm from './pages/forms/containers/nonContainerAutoGraderForm'
+import GradebookStudentPage from './pages/gradebook/gradebookStudentPage'
+import GradebookInstructorPage from './pages/gradebook/gradebookInstructorPage'
+import SubmissionFeedbackPage from './pages/submissions/submissionFeedbackPage'
+import ContainerAutoGraderForm from './pages/forms/containers/containerAutoGraderForm'
+import CoursePreviewPage from './pages/courses/coursePreviewPage'
+import CoursesListPage from "./pages/listPages/courses/coursesListPage";
+import AssignmentProblemFormPage from './pages/forms/assignments/assignmentProblemFormPage'
+import InstructorSubmissionspage from "./pages/submissions/InstructorSubmissionspage";
+import SubmissionFileView from './pages/submissions/submissionFileView'
+
+import WebhookURLForm from './pages/webhookURLForm'
 
 const AuthenticatedRouter = () => (
-  <Switch>
-    <Route exact path='/' component={HomePage} />
-    <Route exact path='/users/:userId/update' component={UserDetailPage} />
-    <Route exact path='/users/:userId/submissions' component={UserSubmissionsListPage} />
-    {/* Just reuse the homepage here, for now this is fine. we might want to change this in the future though which is why they exist as separate routes */}
-    <Route exact path='/users/:userId/assignments' component={HomePage} />
-    <Route exact path='/users/:userId/courses' component={UserCoursesListPage} />
-    <Route exact path='/users/:userId/addCoursesForm' component={EditCourseFormPage} />
-    <Route exact path='/submissions/:submissionId' component={SubmissionDetailPage} />
-    <Route exact path='/submissions/:submissionId/feedback' component={SubmissionFeedbackPage} />
-    <Route exact path='/courses/' component={CoursesListPage} />
-    <Route exact path='/courses/:courseId' component={CourseDetailPage} />
-    <Route exact path='/courses/:courseId/update' component={CourseUpdatePage} />
-    <Route exact path='/courses/:courseId/users' component={CourseUsersListPage} />
-    <Route exact path='/courses/:courseId/assignments' component={CourseAssignmentsListPage} />
-    <Route exact path='/courses/:courseId/assignments/create' component={AssignmentCreatePage} />
-    <Route exact path='/courses/:courseId/assignments/:assignmentId' component={AssignmentDetailPage} />
-    <Route exact path='/courses/:courseId/assignments/:assignmentId/update' component={AssignmentUpdatePage} />
-    <Route exact path='/ncagtest' component={NonContainerAutoGraderForm} />
-    <Route exact path='/courses/:courseId/gradebook' component={GradebookStudentPage} />
-    <Route exact path='/courses/:courseId/gradebook/instructor' component={GradebookInstructorPage} />
-    <Route component={NotFoundPage} />
-  </Switch>
+    <Switch>
+
+        <Route exact path='/' component={HomePage}/>
+        <Route exact path='/courses' component={CoursesListPage}/>
+        <Route exact path='/addCoursesForm' component={EditCourseFormPage}/>
+
+        <Route exact path='/user/:userId/update' component={UserDetailPage}/>
+
+        <Route exact path='/course/:courseId' component={CourseDetailPage}/>
+        <Route exact path='/course/:courseId/preview' component={CoursePreviewPage}/>
+        <Route exact path='/course/:courseId/update' component={CourseUpdatePage}/>
+        <Route exact path='/course/:courseId/gradebook' component={GradebookStudentPage}/>
+        <Route exact path='/course/:courseId/createAssignment' component={AssignmentCreatePage}/>
+        <Route exact path='/course/:courseId/gradebook/instructor' component={GradebookInstructorPage}/>
+
+        <Route exact path='/course/:courseId/assignment/:assignmentId' component={AssignmentDetailPage}/>
+        <Route exact path='/course/:courseId/assignment/:assignmentId/update' component={AssignmentUpdatePage}/>
+        <Route exact path='/course/:courseId/assignment/:assignmentId/createNCAG'
+               component={NonContainerAutoGraderForm}/>
+        <Route exact path='/course/:courseId/assignment/:assignmentId/createCAG' component={ContainerAutoGraderForm}/>
+        <Route exact path='/course/:courseId/assignment/:assignmentId/createProblem' component={AssignmentProblemFormPage}/>
+        <Route exact path='/course/:courseId/webhooks' component={WebhookURLForm}/>
+
+        <Route exact path='/course/:courseId/assignment/:assignmentId/submission/:submissionId'
+               component={SubmissionDetailPage}/>
+            <Route exact path='/course/:courseId/assignment/:assignmentId/submissions'
+                   component={InstructorSubmissionspage}/>
+        <Route exact path='/course/:courseId/assignment/:assignmentId/submission/:submissionId/feedback'
+               component={SubmissionFeedbackPage}/>
+       <Route exact path ='/course/:courseId/assignment/:assignmentId/submission/:submissionId/fileView' component={SubmissionFileView}/>
+       // TBD, undecided where webhooks should be placed
+        {/*<Route exact path='/webhookURLPage' component={webhookURLForm}/>*/}
+
+        <Route component={NotFoundPage}/>
+    </Switch>
 )
 
 export default AuthenticatedRouter

@@ -22,15 +22,15 @@ describe('ContainerAutoGrader Serializer', () => {
 
   describe('Serializing ContainerAutoGrader', () => {
     test('ContainerAutoGrader values exist in the response', () => {
-        const actualResult = serialize(mockContainerAutoGrader)
+      const actualResult = serialize(mockContainerAutoGrader)
 
-        expect(actualResult).toBeDefined()
-        expect(actualResult.id).toEqual(mockContainerAutoGrader.id)
-        expect(actualResult.assignmentId).toEqual(mockContainerAutoGrader.assignmentId)
-        expect(actualResult.graderFile).toEqual(mockContainerAutoGrader.graderFile)
-        expect(actualResult.makefileFile).toEqual(mockContainerAutoGrader.makefileFile)
-        expect(actualResult.autogradingImage).toEqual(mockContainerAutoGrader.autogradingImage)
-        expect(actualResult.timeout).toEqual(mockContainerAutoGrader.timeout)
+      expect(actualResult).toBeDefined()
+      expect(actualResult.id).toEqual(mockContainerAutoGrader.id)
+      expect(actualResult.assignmentId).toEqual(mockContainerAutoGrader.assignmentId)
+      expect(actualResult.graderFile).toEqual(mockContainerAutoGrader.graderFile)
+      expect(actualResult.makefileFile).toEqual(mockContainerAutoGrader.makefileFile)
+      expect(actualResult.autogradingImage).toEqual(mockContainerAutoGrader.autogradingImage)
+      expect(actualResult.timeout).toEqual(mockContainerAutoGrader.timeout)
     })
 
     test('CreatedAt and ModifiedAt are ISO strings', () => {

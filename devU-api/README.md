@@ -17,17 +17,47 @@ Once you've got these installed, we can build our container and run it
 
 #### Note to run the postgres container locally using the command below
 
-You have to modify ``devU-api/src/environment.ts``
+You have to modify `devU-api/src/environment.ts`
 
 change
 
-``dbHost: (load('database.host') || 'localhost') as string``
+`dbHost: (load('database.host') || 'localhost') as string`
 
 to
 
-``dbHost: 'localhost'``
+`dbHost: 'localhost'`
 
 This will probably be fixed in the future but for now the above steps are necessary
+
+#### Using docker compose
+
+We use [docker compose profiles](https://docs.docker.com/compose/profiles/) to selectively start services in the main docker-compose when developing.
+
+Assuming you are in api dir `devU-api`, To start all api services except the api run
+
+```
+npm run api-services
+```
+
+To stop the services
+
+```
+npm run api-services-stop
+```
+
+Then install dependencies using
+
+```
+npm install
+```
+
+Once you've got all the dependencies installed you can run the project via
+
+```
+npm start
+```
+
+#### Manually:
 
 ```
 docker run \
@@ -40,6 +70,7 @@ docker run \
 ```
 
 Install all node dependencies. All of the database environment variables can change, and can be set as environment variables on your machine if you want to overwrite the defaults
+
 ```
 docker run \
   --name minio \
@@ -66,7 +97,7 @@ npm run generate-config
 Run the initial migrations to setup our DB schema
 
 ```
-npm run typeorm -- migration:run
+npm run typeorm -- migration:run -d src/database.ts
 ```
 
 Once you've got all the dependencies installed you can run the project via
@@ -166,30 +197,30 @@ To generate types for local development run the following commands (all commands
 
 1. ```bash
    cd ./devu-shared
-   ``` 
+   ```
 2. ```bash
    npm install
-   ``` 
+   ```
 3. ```bash
    npm run build-local
    ```
 
-This will create a ``devu-shared-modules`` folder in ``devU-api`` and ``devU-client`` dir
+This will create a `devu-shared-modules` folder in `devU-api` and `devU-client` dir
 
 When developing if you need to create a new type,
 
-1. create the type file in ``devu-shared/src/types/example.type.ts``
-2. export the new type in ``devu-shared/src/index.ts``
+1. create the type file in `devu-shared/src/types/example.type.ts`
+2. export the new type in `devu-shared/src/index.ts`
 3. rerun
    ```bash
    npm run build-local
    ```
 
-This will update the types in ``devU-api`` and ``devU-client`` folders.
+This will update the types in `devU-api` and `devU-client` folders.
 
 **Note if the types are not being detected by your IDE**
 
-**Go to the ``devU-api/`` and ``devU-client/`` and run ``npm install`` in each folder to update the shared modules.**
+**Go to the `devU-api/` and `devU-client/` and run `npm install` in each folder to update the shared modules.**
 
 ### Testing
 
@@ -226,19 +257,19 @@ I wouldn't recommend digging that far down as the of tests should be more human-
 If the schema needs to be updated, you can do so by updating the models and running
 
 ```
-npm run typeorm -- migration:generate -n generatedMigrationName
+npm run typeorm migration:generate -- -d src/database src/migration/<generatedMigrationName>
 ```
 
 Doing so will attempt to create an auto migration from any changes within the `src/models` directory and add it to `src/migrations`. If an auto migration is generated for you (always check your auto migrations), you can run it with the above migration command
 
 ```
-npm run typeorm -- migration:run
+npm run typeorm -- migration:run -d src/database.ts
 ```
 
 And revert the latest migration with
 
 ```
-npm run typeorm -- migration:revert
+npm run typeorm -- migration:revert -d src/database.ts
 ```
 
 ### Configuration Options

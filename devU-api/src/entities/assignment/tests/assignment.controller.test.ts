@@ -53,8 +53,8 @@ describe('AssignmentController', () => {
   describe('GET - /assignments', () => {
     describe('200 - Ok', () => {
       beforeEach(async () => {
-        AssignmentService.list = jest.fn().mockImplementation(() => Promise.resolve(mockedAssignments))
-        await controller.get(req, res, next) // what we're testing
+        AssignmentService.listByCourse = jest.fn().mockImplementation(() => Promise.resolve(mockedAssignments))
+        await controller.getByCourse(req, res, next) // what we're testing
       })
 
       test('Returns list of assignments', () => expect(res.json).toBeCalledWith(expectedResults))
@@ -63,10 +63,10 @@ describe('AssignmentController', () => {
 
     describe('400 - Bad request', () => {
       test('Next called with expected error', async () => {
-        AssignmentService.list = jest.fn().mockImplementation(() => Promise.reject(expectedError))
+        AssignmentService.listByCourse = jest.fn().mockImplementation(() => Promise.reject(expectedError))
 
         try {
-          await controller.get(req, res, next)
+          await controller.getByCourse(req, res, next)
 
           fail('Expected test to throw')
         } catch {

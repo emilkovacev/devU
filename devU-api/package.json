@@ -1,20 +1,23 @@
 {
   "name": "devu-api",
   "version": "1.0.0",
-  "description": "Auto-grading 4.0 API",
+  "description": "DevU API",
   "scripts": {
-    "start": "ts-node-dev src/index.ts",
-    "update-shared": "npm update devu-shared-modules",
-    "typeorm": "ts-node ./node_modules/typeorm/cli.js  --config src/database.ts",
+    "start": "npm run migrate && ts-node-dev src/index.ts",
+    "migrate": "npm run typeorm -- migration:run -d src/database.ts",
+    "create-migrate": "npx typeorm-ts-node-commonjs migration:generate -d src/database.ts",
+    "update-shared": "cd ../devU-shared && npm run build-local && cd ../devU-api && npm i",
+    "typeorm": "typeorm-ts-node-commonjs",
     "test": "jest --passWithNoTests",
     "clean": "rimraf build/*",
     "lint": "tsc",
     "build": "npm-run-all clean lint",
     "format": "prettier --write \"./**/*.{js,ts,json,md}\"",
     "pre-commit": "lint-staged",
-    "generate-config": "docker run --pull always -v $(pwd)/config:/config --user $(id -u):$(id -g) --rm ubautograding/devtools /generateConfig.sh config/default.yml",
     "populate-db": "ts-node-dev ./scripts/populate-db.ts",
-    "tango":  "ts-node-dev ./src/tango/tests/tango.endpoint.test.ts"
+    "tango": "ts-node-dev ./src/tango/tests/tango.endpoint.test.ts",
+    "api-services": "docker compose -f ../docker-compose.yml --profile dev-api up",
+    "api-services-stop": "docker compose -f ../docker-compose.yml --profile dev-api stop"
   },
   "lint-staged": {
     "./**/*.{js,ts,json,md}": [
@@ -25,21 +28,20 @@
     "devu-shared-modules": "file:/devu-shared-modules"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
   "devDependencies": {
     "@types/config": "^0.0.38",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.10",
     "@types/express": "^4.17.12",
-    "@types/helmet": "^4.0.0",
-    "@types/jest": "^26.0.24",
+    "@types/jest": "^27.0.00",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/jws": "^3.2.3",
-    "@types/minio": "^7.0.8",
     "@types/morgan": "^1.9.2",
     "@types/multer": "^1.4.7",
     "@types/node": "^15.12.2",
+    "@types/node-fetch": "^2.6.11",
     "@types/passport": "^1.0.6",
     "@types/passport-strategy": "^0.2.35",
     "@types/swagger-jsdoc": "^6.0.0",
@@ -47,12 +49,13 @@
     "husky": "^6.0.0",
     "jest": "^27.0.4",
     "lint-staged": "^11.0.0",
+    "node-fetch": "^2.7.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.2",
-    "ts-node": "^10.0.0",
-    "ts-node-dev": "^1.1.6",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.3.2"
   },
   "dependencies": {
@@ -66,9 +69,9 @@
     "express-validator": "^6.14.2",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^9.0.2",
-    "minio": "^7.0.18",
+    "minio": "^8.0.0",
     "morgan": "^1.10.0",
-    "multer": "^1.4.2",
+    "multer": "^1.4.5-lts.1",
     "passport": "^0.6.0",
     "passport-saml": "^3.2.2",
     "pg": "^8.4.0",
@@ -76,6 +79,6 @@
     "regex-parser": "^2.3.0",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6",
-    "typeorm": "0.2.32"
+    "typeorm": "^0.3.20"
   }
 }

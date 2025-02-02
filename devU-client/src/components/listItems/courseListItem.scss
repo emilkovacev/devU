@@ -1,0 +1,124 @@
+@import 'variables';
+
+.name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  padding:15px;
+  width:100%;
+  text-align:center;
+  box-sizing:border-box;
+
+
+}
+
+.tag {
+  min-height: 3px;
+  background-color: $primary;
+  margin-right: 10px;
+  border-radius: 0.6rem;
+}
+
+
+.container {
+  text-decoration: none;
+
+  display: flex;
+  flex-direction: row;
+
+  background: $list-simple-item-background;
+  border-radius: 0.6rem;
+
+  padding: 1.5rem;
+
+  margin-bottom: 1rem;
+
+  transition: background-color 0.2s linear;
+
+  color: $text-color;
+
+  justify-content: space-between;
+
+  &:hover,
+  &:focus {
+    background: $list-simple-item-background-hover;
+  }
+}
+
+.courseContainer {
+  cursor: pointer;
+  text-decoration: none;
+
+  background: $list-item-background;
+  border-radius: 0.6rem;
+
+  padding: 1rem;
+
+  margin-bottom: 1rem;
+
+  transition: background-color 0.2s linear;
+
+  color: $text-color;
+
+  &.enrolled {
+    background-color: #dff0d8; // Light green background for enrolled courses
+    border-color: #3c763d; // Darker green border for enrolled courses
+    color: #3c763d; // Change text color to darker green
+  }
+  &:hover,
+  &:focus {
+    background: $list-item-background-hover;
+  }
+}
+
+.enrollmentStatus {
+  margin-left: 10px;
+  font-weight: bold; // Make it bold for emphasis
+}
+
+.enrolled {
+  color: green; // Change color for enrolled courses
+}
+
+.notEnrolled {
+  color: red; // Change color for not enrolled courses
+}
+
+@media (max-width: $medium) {
+  .subText {
+    display: block;
+  }
+}
+
+.triangle {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid $text-color;
+  transition: transform 0.3s ease;
+}
+
+
+.rotate {
+  transform: rotate(90deg);
+}
+
+.courseInfo {
+  display: flex;
+
+}
+
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 10px;
+
+}
+
+.info {
+  font-weight: bold;
+  padding: 0.5rem;
+}

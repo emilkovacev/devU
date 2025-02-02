@@ -1,0 +1,111 @@
+@import 'variables';
+
+
+h2 {
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  margin-left: 0;
+}
+
+.pageWrapper {
+  padding: 0 100px;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.form {
+  background-color: $list-item-background;
+  border-radius: 20px;
+  padding: 30px;
+  width: 50%;
+  height: fit-content;
+}
+
+.form>h2 {
+  margin-top: 0;
+}
+
+.datepickerContainer {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.header {
+  color: $text-color;
+  display: flex;
+  align-items: center;
+}
+
+.textFieldContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.fileName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fileRemovalButton {
+  background: none;
+  border: none;
+  color: $text-color;
+  cursor: pointer;
+  font-size: 0.9em;
+
+
+  &:hover {
+    text-decoration: dashed;
+    color: red;
+  }
+}
+
+@media (max-width: 1115px) {
+  .pageWrapper {
+    padding: 0 50px;
+  }
+}
+
+@media (max-width: 1015px) {
+  .pageWrapper {
+    padding: 0 100px;
+  }
+
+  .flex {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .form {
+    width: 100%;
+  }
+}
+
+@media (max-width: 670px) {
+  .pageWrapper {
+    padding: 0 50px;
+  }
+}
+
+@media (max-width: 560px) {
+  .datepickerContainer {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

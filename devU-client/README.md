@@ -12,18 +12,63 @@ This project is the client for the DevU autograder. It's intent is to act as a w
 - [Node](https://nodejs.org/en/) - Used to run webpack.
 
 ## Running the Application
+All commands below assume you are in client directory: ```devU-client```
 
-Firstly install this projects dependancies by installing node. Once node is installed we can continue with running the application.
+We are using an older version of node, 
+so you might need to use a node version manager to switch to an older version.
 
-Firstly we'll have to install the project dependancies
+Below are instructions for [NVM](https://github.com/nvm-sh/nvm), but you are free to use whatever version manager you prefer.
+
+Install [NVM](https://github.com/nvm-sh/nvm).
+For Windows users use [NVM-windows](https://github.com/coreybutler/nvm-windows) 
+
+As of writing, we are using node version 16, so run
+
+**Warning this will change the node version globally
+so for other projects you need to change node version again.**
+
+```
+nvm use 16
+```
+
+To switch back to latest version run 
+
+```
+nvm install latest # if latest version is not installed
+nvm use latest
+```
+
+To verify node version
+
+```
+node -v # make sure it ouputs v16.X.X
+```
+
+Next install the project dependencies
 
 ```
 npm install
 ```
 
-Because this project lives almost entirely behind auth, this project requires [its API](https://github.com/UBAutograding/devU-api) to be running in order to operate correctly. Under normal circumstances you'd be able to hit the development or production APIs without having to run your own local API. But because those don't yet exist for now if you want to run this project you'll have to run a local version of the api to use this client.
+Because this project lives almost entirely behind auth, this project requires [its API](../devU-api/README.md) to be running in order to operate correctly. 
+Under normal circumstances you'd be able to hit the development or production APIs without having to run your own local API. 
+But because those don't yet exist for now if you want to run this project you'll have to run a local version of the api to use this client.
 
-Once there project dependancies are installed and an api is running, we can run the project with a few different commands
+You can start a local api in docker using 
+
+```
+npm run dev-backend
+```
+
+This will start all backend services required for the app.
+
+To stop the api use
+
+```
+npm run dev-backend-stop
+```
+
+Once there project dependencies are installed and an api is running, we can run the project with a few different commands
 
 ```
 npm run local # points to local api

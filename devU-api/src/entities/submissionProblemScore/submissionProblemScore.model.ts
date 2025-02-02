@@ -18,7 +18,7 @@ export default class SubmissionProblemScoreModel {
    * @swagger
    * tags:
    *   - name: SubmissionProblemScores
-   *     description: 
+   *     description:
    * components:
    *  schemas:
    *    SubmissionProblemScore:
@@ -45,7 +45,6 @@ export default class SubmissionProblemScoreModel {
   @JoinColumn({ name: 'submission_id' })
   @ManyToOne(() => SubmissionModel)
   submissionId: number
-
 
   @Column({ name: 'assignment_problem_id' })
   @JoinColumn({ name: 'assignment_problem_id' })
